@@ -76,8 +76,8 @@ void autonomous() {}
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::Motor left_mtr1(1);
-	pros::Motor left_mtr2(10);
-	pros::Motor right_mtr1(15);
+	pros::Motor left_mtr2(15);
+	pros::Motor right_mtr1(10);
 	pros::Motor right_mtr2(20);
 
 	while (true) {
