@@ -83,6 +83,7 @@ pros::Motor left_mtr2(17);
 pros::Motor right_mtr1(10);
 pros::Motor right_mtr2(20);
 pros::Motor rollerMtr(16);
+pros::Motor expansionMtr(19);
 
 void opcontrol() {
 	while (true) {
@@ -93,12 +94,14 @@ void opcontrol() {
 		int right = master.get_analog(ANALOG_LEFT_Y);
 		int turn = master.get_analog(ANALOG_RIGHT_X);
 		int roller = master.get_digital(DIGITAL_R1);
+		int expansion = master.get_digital(DIGITAL_L1);
 
 		left_mtr1 = left - turn;
 		left_mtr2 = left - turn;
 		right_mtr1 = -right - turn;
 		right_mtr2 = -right - turn;
 		rollerMtr = roller * (-80);
+		expansionMtr = expansion * (-127);
 
 		pros::delay(20);
 	}
