@@ -58,7 +58,11 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+
+	
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -73,13 +77,14 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr1(1);
-	pros::Motor left_mtr2(15);
-	pros::Motor right_mtr1(10);
-	pros::Motor right_mtr2(20);
+pros::Controller master(pros::E_CONTROLLER_MASTER);
+pros::Motor left_mtr1(1);
+pros::Motor left_mtr2(17);
+pros::Motor right_mtr1(10);
+pros::Motor right_mtr2(20);
+pros::Motor rollerMtr(16);
 
+void opcontrol() {
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
@@ -87,13 +92,13 @@ void opcontrol() {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_LEFT_Y);
 		int turn = master.get_analog(ANALOG_RIGHT_X);
+		int roller = master.get_digital(DIGITAL_R1);
 
 		left_mtr1 = left - turn;
 		left_mtr2 = left - turn;
 		right_mtr1 = -right - turn;
 		right_mtr2 = -right - turn;
-
-
+		rollerMtr = roller * (-80);
 
 		pros::delay(20);
 	}
