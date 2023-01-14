@@ -1,4 +1,7 @@
 #include "main.h"
+#include <cmath>
+#include <math.h>
+#include <string>
 
 /**
  * A callback function for LLEMU's center button.
@@ -78,30 +81,74 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Motor left_mtr1(1);
-pros::Motor left_mtr2(17);
-pros::Motor right_mtr1(10);
-pros::Motor right_mtr2(20);
-pros::Motor rollerMtr(16);
-pros::Motor expansionMtr(19);
+pros::Motor mtr_lf(17);
+pros::Motor mtr_lb(9);
+pros::Motor mtr_rf(16);
+pros::Motor mtr_rb(20);
+pros::Motor rollerMtr(15);
+pros::Motor expansionMtr(1);
+double strafeAngle; // stores the angle the left stick is pointing
 
 void opcontrol() {
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_LEFT_Y);
-		int turn = master.get_analog(ANALOG_RIGHT_X);
-		int roller = master.get_digital(DIGITAL_R1);
-		int expansion = master.get_digital(DIGITAL_L1);
+		double ymotion = master.get_analog(ANALOG_LEFT_Y);
+		double xmotion = master.get_analog(ANALOG_LEFT_X);
+		double rotation = master.get_analog(ANALOG_RIGHT_X);
+		double roller = master.get_digital(DIGITAL_R1);
+		double expansion = master.get_digital(DIGITAL_L1);
 
+		//drive
+		strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
+
+		// calculating rotation values and strafe values for each motor (i might have to change the rotation later)
+		int LF = -(ymotion + xmotion + rotation);
+		int RF = (ymotion - xmotion - rotation);
+		int LB = -(ymotion - xmotion + rotation);
+		int RB = (ymotion + xmotion - rotation);
+
+    	// normalize the powers of the motors so that no value exceeds 127
+		int maxPower = abs(LF);
+		if (abs(RF) > maxPower) maxPower = abs(RF);
+		if (abs(LB) > maxPower) maxPower = abs(LB);
+		if (abs(RB) > maxPower) maxPower = abs(RB);
+		if (maxPower > 127) {
+			LF = LF * 127 / maxPower;
+			RF = RF * 127 / maxPower;
+			LB = LB * 127 / maxPower;
+			RB = RB * 127 / maxPower;
+		}
+
+		mtr_lf = LF;
+		mtr_rf = RF;
+		mtr_lb = LB;
+		mtr_rb = RB;
+
+		/* 	this also works as a replacement for the code above
+		   	however the code above is what chatGPT generated so im going to keep it
+		mtr_lf = -(cos((strafeAngle - 45)*(M_PI/180)) * sqrt(pow(ymotion, 2) + pow(xmotion, 2)));
+		mtr_rb = cos((strafeAngle - 45)*(M_PI/180)) * sqrt(pow(ymotion, 2) + pow(xmotion, 2));
+
+		mtr_rf = sin((strafeAngle - 45)*(M_PI/180)) * sqrt(pow(ymotion, 2) + pow(xmotion, 2));
+		mtr_lb = -(sin((strafeAngle - 45)*(M_PI/180)) * sqrt(pow(ymotion, 2) + pow(xmotion, 2))); 
+		*/
+
+		/* old code for tank drive
 		left_mtr1 = left - turn;
 		left_mtr2 = left - turn;
 		right_mtr1 = -right - turn;
 		right_mtr2 = -right - turn;
+		*/
+
 		rollerMtr = roller * (-80);
-		expansionMtr = expansion * (-127);
+		expansionMtr = expansion * (-40);
+		pros::lcd::set_text(0, std::to_string(xmotion));
+		pros::lcd::set_text(1, std::to_string(ymotion));
+		pros::lcd::set_text(2, "LF: " + std::to_string(mtr_lf.get_power()) + "\t RB: "+ std::to_string(mtr_rb.get_power()));
+		pros::lcd::set_text(3, "LB: " + std::to_string(mtr_lb.get_power()) + "\t RF: "+ std::to_string(mtr_rf.get_power()));
+		pros::lcd::set_text(4, std::to_string(strafeAngle));
 
 		pros::delay(20);
 	}
