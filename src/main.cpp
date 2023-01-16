@@ -104,10 +104,10 @@ void opcontrol() {
 		strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
 
 		// calculating rotation values and strafe values for each motor (i might have to change the rotation later)
-		int LF = -(ymotion + xmotion + rotation);
-		int RF = (ymotion - xmotion - rotation);
-		int LB = -(ymotion - xmotion + rotation);
-		int RB = (ymotion + xmotion - rotation);
+		int LF = (ymotion + xmotion + rotation);
+		int RF = -(ymotion - xmotion - rotation);
+		int LB = (ymotion - xmotion + rotation);
+		int RB = -(ymotion + xmotion - rotation);
 
     	// normalize the powers of the motors so that no value exceeds 127
 		int maxPower = abs(LF);
@@ -141,7 +141,6 @@ void opcontrol() {
 		right_mtr1 = -right - turn;
 		right_mtr2 = -right - turn;
 		*/
-
 		rollerMtr = roller * (-80);
 		expansionMtr = expansion * (-40);
 		pros::lcd::set_text(0, std::to_string(xmotion));
