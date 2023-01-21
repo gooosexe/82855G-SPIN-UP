@@ -143,11 +143,11 @@ void opcontrol() {
 		*/
 		rollerMtr = roller * (-80);
 		expansionMtr = expansion * (-40);
-		pros::lcd::set_text(0, std::to_string(xmotion));
-		pros::lcd::set_text(1, std::to_string(ymotion));
-		pros::lcd::set_text(2, "LF: " + std::to_string(mtr_lf.get_power()) + "\t RB: "+ std::to_string(mtr_rb.get_power()));
-		pros::lcd::set_text(3, "LB: " + std::to_string(mtr_lb.get_power()) + "\t RF: "+ std::to_string(mtr_rf.get_power()));
-		pros::lcd::set_text(4, std::to_string(strafeAngle));
+		pros::lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
+		pros::lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
+		pros::lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
+		pros::lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
+		pros::lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
 
 		pros::delay(20);
 	}
