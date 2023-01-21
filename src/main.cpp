@@ -39,28 +39,10 @@ void initialize() {
  */
 void disabled() {}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
+
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
+
 void autonomous() {
 
 	
@@ -81,12 +63,23 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 pros::Controller master(pros::E_CONTROLLER_MASTER);
+
+// motors
 pros::Motor mtr_lf(17);
 pros::Motor mtr_lb(9);
 pros::Motor mtr_rf(16);
 pros::Motor mtr_rb(20);
+
 pros::Motor rollerMtr(15);
 pros::Motor expansionMtr(1);
+
+pros::Motor mtr_intake(100);
+
+// pneumatics
+pros::ADIDigitalOut pn_indexer ('C');
+pros::ADIDigitalOut pn_expand1 ('A');
+pros::ADIDigitalOut pn_expand2 ('B');
+
 double strafeAngle; // stores the angle the left stick is pointing
 
 void opcontrol() {
@@ -97,9 +90,38 @@ void opcontrol() {
 		double ymotion = master.get_analog(ANALOG_LEFT_Y);
 		double xmotion = master.get_analog(ANALOG_LEFT_X);
 		double rotation = master.get_analog(ANALOG_RIGHT_X);
-		double roller = master.get_digital(DIGITAL_R1);
-		double expansion = master.get_digital(DIGITAL_L1);
+		//double roller = master.get_digital(DIGITAL_R1);
+		//double expansion = master.get_digital(DIGITAL_L1);
+		
+		// if roller pressed
+		if (master.get_digital(DIGITAL_L1)) {
+			rollerMtr = -80;
+		} else {
+			rollerMtr = 0;
+		}
 
+		// if expand pressed
+		if (master.get_digital(DIGITAL_A)) {
+			pn_expand1.set_value(1);
+			pn_expand2.set_value(1);
+		} else {
+			pn_expand1.set_value(0);
+			pn_expand2.set_value(0);
+		}
+		
+		// indexer
+		if (master.get_digital(DIGITAL_R2)) {
+			pn_indexer.set_value(1);
+			pros::delay(100);
+			pn_indexer.set_value(0);
+		}
+
+		// intake
+		if (master.get_digital(DIGITAL_R1)) {
+			mtr_intake = 127;
+		} else {
+			mtr_intake = 0;
+		}
 
 		//drive
 		strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
@@ -142,8 +164,7 @@ void opcontrol() {
 		right_mtr1 = -right - turn;
 		right_mtr2 = -right - turn;
 		*/
-		rollerMtr = roller * (-80);
-		expansionMtr = expansion * (-40);
+		
 		pros::lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
 		pros::lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
 		pros::lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
