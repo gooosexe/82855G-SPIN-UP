@@ -100,14 +100,15 @@ void opcontrol() {
 		double roller = master.get_digital(DIGITAL_R1);
 		double expansion = master.get_digital(DIGITAL_L1);
 
+
 		//drive
 		strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
 
 		// calculating rotation values and strafe values for each motor (i might have to change the rotation later)
-		int LF = (ymotion + xmotion + rotation);
-		int RF = -(ymotion - xmotion - rotation);
-		int LB = (ymotion - xmotion + rotation);
-		int RB = -(ymotion + xmotion - rotation);
+		int LF = (ymotion - xmotion + rotation);
+		int RF = -(ymotion + xmotion - rotation);
+		int LB = (ymotion + xmotion + rotation);
+		int RB = -(ymotion - xmotion - rotation);
 
     	// normalize the powers of the motors so that no value exceeds 127
 		int maxPower = abs(LF);
