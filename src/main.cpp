@@ -11,11 +11,11 @@ pros::Motor mtr_lb(16);
 pros::Motor mtr_rf(19);
 pros::Motor mtr_rb(20);
 
-pros::Motor rollerMtr(10);
+pros::Motor rollerMtr(8);
 //pros::Motor expansionMtr(1);
 
 pros::Motor mtr_intake(9);
-pros::Motor flywheel(8);
+pros::Motor flywheel(10);
 pros::Motor mtr_indexer(7);
 
 // pneumatics+
