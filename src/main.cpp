@@ -5,6 +5,8 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
+isFlywheel = false;
+
 // motors
 pros::Motor mtr_lf(17);
 pros::Motor mtr_lb(16);
@@ -112,10 +114,18 @@ void opcontrol() {
 
 		//flywheel
 		if (master.get_digital(DIGITAL_L2)) {
-			flywheel = 127;
+			isFlywheel = !isFlywheel;
+			if (isFlywheel) {
+				flywheel = 127;
+			} else {
+				flywheel = 0;
+			}
+		} 
+		/*else if (master.get_digital(DIGITAL_UP)) {
+			flywheel = -127;
 		} else {
 			flywheel = 0;
-		}
+		}*/
 
 		// if expand pressed
 		if (master.get_digital(DIGITAL_B)) {
@@ -134,6 +144,8 @@ void opcontrol() {
 		// intake
 		if (master.get_digital(DIGITAL_R1)) {
 			mtr_intake = -127;
+		} else if (master.get_digital(DIGITAL_DOWN)) {
+			mtr_intake = 127;
 		} else {
 			mtr_intake = 0;
 		}
