@@ -5,15 +5,17 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-isFlywheel = false;
+bool isFlywheel = true;
+bool isFlywheelReverse = false;
+bool isIntake = false;
 
 // motors
-pros::Motor mtr_lf(17);
+pros::Motor mtr_lf(15);
 pros::Motor mtr_lb(16);
 pros::Motor mtr_rf(19);
 pros::Motor mtr_rb(20);
 
-pros::Motor rollerMtr(8);
+pros::Motor rollerMtr(3);
 //pros::Motor expansionMtr(1);
 
 pros::Motor mtr_intake(9);
@@ -69,14 +71,36 @@ void competition_initialize() {}
 
 void autonomous() {
 
-	mtr_lf.move_relative(-200, 80);
-	mtr_lb.move_relative(-200, 80);
-	mtr_rf.move_relative(200, 80);
-	mtr_rb.move_relative(200, 80);
+	mtr_lf.move_relative(200, 80);
+	mtr_lb.move_relative(200, 80);
+	mtr_rf.move_relative(-200, 80);
+	mtr_rb.move_relative(-200, 80);
 
 	pros::delay(1000);
 	
-	rollerMtr.move_relative(-500, -127);
+	rollerMtr.move_relative(470, 127);
+
+	pros::delay(1000);
+
+	mtr_lf.move_relative(-600, 80);
+	mtr_lb.move_relative(-600, 80);
+	mtr_rf.move_relative(600, 80);
+	mtr_rb.move_relative(600, 80);
+
+	pros::delay(750);
+
+	mtr_lf.move_relative(-500, 80);
+	mtr_lb.move_relative(-500, 80);
+	mtr_rf.move_relative(-500, 80);
+	mtr_rb.move_relative(-500, 80);
+
+	pros::delay(500);
+
+	flywheel = 127;
+
+	pros::delay(4000);
+
+	mtr_indexer.move_relative(-5000, -127);
 }
 
 /**
@@ -107,25 +131,20 @@ void opcontrol() {
 		
 		// if roller pressed
 		if (master.get_digital(DIGITAL_L1)) {
-			rollerMtr = -127;
+			rollerMtr = 127;
 		} else {
 			rollerMtr = 0;
 		}
-
+		
 		//flywheel
-		if (master.get_digital(DIGITAL_L2)) {
-			isFlywheel = !isFlywheel;
-			if (isFlywheel) {
-				flywheel = 127;
-			} else {
-				flywheel = 0;
-			}
-		} 
-		/*else if (master.get_digital(DIGITAL_UP)) {
+		if (master.get_digital_new_press(DIGITAL_L2)) {
 			flywheel = -127;
-		} else {
+		} else if (master.get_digital_new_press(DIGITAL_UP)) {
 			flywheel = 0;
-		}*/
+		} else {
+			flywheel = 127;
+		}
+
 
 		// if expand pressed
 		if (master.get_digital(DIGITAL_B)) {
@@ -133,30 +152,27 @@ void opcontrol() {
 		} else {
 			pn_expand.set_value(0);
 		}
-		
 		//indexer
 		if (master.get_digital(DIGITAL_R2)) {
-			mtr_indexer = -127;
+			mtr_indexer = 80;
 		} else {
 			mtr_indexer = 0;
 		}
 
 		// intake
 		if (master.get_digital(DIGITAL_R1)) {
-			mtr_intake = -127;
-		} else if (master.get_digital(DIGITAL_DOWN)) {
 			mtr_intake = 127;
 		} else {
-			mtr_intake = 0;
+			mtr_intake = -127;
 		}
 
 		//drive
 		//strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
 
-		int LF = -(ymotion + rotation);
-		int RF = (ymotion - rotation);
-		int LB = -(ymotion + rotation);
-		int RB = (ymotion - rotation);
+		int LF = -ymotion - rotation;
+		int RF = ymotion - rotation;
+		int LB = -ymotion - rotation;
+		int RB = ymotion - rotation;
 
 		mtr_lf = LF;
 		mtr_rf = RF;
@@ -170,6 +186,6 @@ void opcontrol() {
 		pros::lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
 		pros::lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
 
-		pros::delay(20);
+		pros::delay(1);
 	}
 }
