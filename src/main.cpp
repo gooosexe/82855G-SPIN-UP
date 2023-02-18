@@ -5,9 +5,13 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
+<<<<<<< HEAD
 bool isFlywheel = true;
 bool isFlywheelReverse = false;
 bool isIntake = false;
+=======
+
+>>>>>>> 42662ca (iuhiuhiuhiuhiuhiuh)
 
 // motors
 pros::Motor mtr_lf(15);
@@ -137,7 +141,16 @@ void opcontrol() {
 		}
 		
 		//flywheel
+<<<<<<< HEAD
 		if (master.get_digital_new_press(DIGITAL_L2)) {
+=======
+		if (master.get_digital(DIGITAL_L2)) {
+			flywheel = -127;
+		} else {
+			flywheel = 127;
+		}
+		/*else if (master.get_digital(DIGITAL_UP)) {
+>>>>>>> 42662ca (iuhiuhiuhiuhiuhiuh)
 			flywheel = -127;
 		} else if (master.get_digital_new_press(DIGITAL_UP)) {
 			flywheel = 0;
