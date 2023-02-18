@@ -5,9 +5,7 @@
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-bool isFlywheel = true;
-bool isFlywheelReverse = false;
-bool isIntake = false;
+double inches = 200;
 
 // motors
 pros::Motor mtr_lf(15);
@@ -28,6 +26,22 @@ pros::ADIDigitalOut pn_expand ('A');
 //pros::ADIDigital
 //pros::ADIDigitalOb ut pn_expand2 ('B');
 
+void moveLeftSide(int distance, int power) {
+    mtr_lf.move_relative(-distance, power);
+    mtr_lb.move_relative(-distance, power);
+}
+
+void moveRightSide(int distance, int power) {
+    mtr_rf.move_relative(distance, power);
+    mtr_rb.move_relative(distance, power);
+}
+
+void moveAll(int distance, int power) {
+    mtr_lf.move_relative(-distance, power);
+    mtr_lb.move_relative(-distance, power);
+    mtr_rf.move_relative(distance, power);
+    mtr_rb.move_relative(distance, power);
+}
 
 /**
  * A callback function for LLEMU's center button.
@@ -36,13 +50,13 @@ pros::ADIDigitalOut pn_expand ('A');
  * "I was pressed!" and nothing.
  */
 void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
+    static bool pressed = false;
+    pressed = !pressed;
+    if (pressed) {
+        pros::lcd::set_text(2, "I was pressed!");
+    } else {
+        pros::lcd::clear_line(2);
+    }
 }
 
 /**
@@ -52,10 +66,10 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+    pros::lcd::initialize();
+    pros::lcd::set_text(1, "Hello PROS User!");
 
-	pros::lcd::register_btn1_cb(on_center_button);
+    pros::lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -66,41 +80,161 @@ void initialize() {
 void disabled() {}
 
 
+void turnRight90() {
+    moveLeftSide(510, 80);
+    moveRightSide(-510, 80);
+
+}
+
+void turnLeft90() {
+    moveLeftSide(-510, 80);
+    moveRightSide(510, 80);
+}
+
+void flipRight() {
+    moveLeftSide(1010, 80);
+    moveRightSide(-1010, 80);
+}
+
+void flipLeft() {
+    moveLeftSide(-1010, 80);
+    moveRightSide(1010, 80);
+}
+
+
+
 void competition_initialize() {}
 
 
 void autonomous() {
 
-	mtr_lf.move_relative(200, 80);
-	mtr_lb.move_relative(200, 80);
-	mtr_rf.move_relative(-200, 80);
-	mtr_rb.move_relative(-200, 80);
+    turnRight90();
 
-	pros::delay(1000);
-	
-	rollerMtr.move_relative(470, 127);
+    pros::delay(2000);
 
-	pros::delay(1000);
+    turnLeft90();
 
-	mtr_lf.move_relative(-600, 80);
-	mtr_lb.move_relative(-600, 80);
-	mtr_rf.move_relative(600, 80);
-	mtr_rb.move_relative(600, 80);
+    pros::delay(2000);
 
-	pros::delay(750);
+    flipRight();
 
-	mtr_lf.move_relative(-500, 80);
-	mtr_lb.move_relative(-500, 80);
-	mtr_rf.move_relative(-500, 80);
-	mtr_rb.move_relative(-500, 80);
+    pros::delay(2000);
 
-	pros::delay(500);
+    flipLeft();
 
-	flywheel = 127;
+// LS auto                                                                                                                               
 
-	pros::delay(4000);
+    // moveAll(-300, 80);
 
-	mtr_indexer.move_relative(-5000, -127);
+    // pros::delay(500);
+
+    // rollerMtr.move_relative(480, 127);
+
+    // pros::delay(600);
+
+    // moveAll(250, 80);
+
+    // pros::delay(500);
+
+    // moveLeftSide(525, 80);
+    // moveRightSide(-525, 80);
+    
+    // pros::delay(500);
+
+    // moveAll(200, 80);
+
+    // flywheel = 110;
+
+    // pros::delay(2000);
+
+    // mtr_indexer.move_relative(3500, 127);
+
+    // pros::delay(2000);
+
+
+    // moveLeftSide(760, 80);
+    // moveRightSide(-760, 80);
+
+    // pros::delay(1500);
+
+    // mtr_intake = -80;
+
+    // moveAll(-3000 , 80);
+
+    
+
+    // pros::delay(3000);
+
+    // moveLeftSide(700, 80);git pu
+    // moveRightSide(-700, 80);                                                        
+                
+    // pros::delay(2000);                           
+
+    // flywheel = 127;
+
+    // pros::delay(8000);
+
+    // mtr_indexer.move_relative(3500, 127);
+
+    // pros::delay(3000);
+
+    // flywheel = 0;
+
+//RS auto
+    // mtr_lf.move_relative(inches*10, 100); // Move forwards
+    // mtr_lb.move_relative(inches*10, 100);
+    // mtr_rf.move_relative(-inches*10, 100);
+    // mtr_rb.move_relative(-inches*10, 100);
+    // pros::delay(100);
+    // mtr_lf.move_relative(inches*10, 100); // Move forwards
+    // mtr_lb.move_relative(inches*10, 100);
+    // mtr_rf.move_relative(-inches*10, 100);
+    // mtr_rb.move_relative(-inches*10, 100);
+    // pros::delay(100);
+    // mtr_lf.move_relative(inches*10, 100); // Move forwards
+    // mtr_lb.move_relative(inches*10, 100);
+    // mtr_rf.move_relative(-inches*10, 100);
+    // mtr_rb.move_relative(-inches*10, 100);
+
+    // pros::delay(1000);
+
+    // mtr_lf.move_relative(-570, 50); // Turn clockwise
+    // mtr_lb.move_relative(-570, 50);
+    // mtr_rf.move_relative(-570, 50);
+    // mtr_rb.move_relative(-570, 50);
+
+    // pros::delay(1000);
+
+    // mtr_lf.move_relative(inches*2, 80); // Move forwards
+    // mtr_lb.move_relative(inches*2, 80);
+    // mtr_rf.move_relative(-inches*2, 80);
+    // mtr_rb.move_relative(-inches*2, 80);
+
+    // pros::delay(1000);
+
+    // rollerMtr.move_relative(470, 127);
+
+    // pros::delay(1000);
+
+    // mtr_lf.move_relative(-inches*3, 80); // Move back
+    // mtr_lb.move_relative(-inches*3, 80);
+    // mtr_rf.move_relative(inches*3, 80);
+    // mtr_rb.move_relative(inches*3, 80);
+
+    // pros::delay(1000);
+
+    // mtr_lf.move_relative(600, 80); // Turn clockwise
+    // mtr_lb.move_relative(600, 80);
+    // mtr_rf.move_relative(600, 80);
+    // mtr_rb.move_relative(600, 80);
+
+    // pros::delay(200);
+
+    // flywheel = 115;
+
+    // pros::delay(3000);
+
+    // mtr_indexer.move_relative(5000, 127);
 }
 
 /**
@@ -120,72 +254,69 @@ void autonomous() {
 double strafeAngle; // stores the angle the left stick is pointing
 
 void opcontrol() {
-	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+    while (true) {
+        pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+                         (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+                         (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
-		double ymotion = master.get_analog(ANALOG_LEFT_Y);
-		double xmotion = master.get_analog(ANALOG_LEFT_X);
-		double rotation = master.get_analog(ANALOG_RIGHT_X);
-		
-		// if roller pressed
-		if (master.get_digital(DIGITAL_L1)) {
-			rollerMtr = 127;
-		} else {
-			rollerMtr = 0;
-		}
-		
-		//flywheel
-		if (master.get_digital_new_press(DIGITAL_L2)) {
-			flywheel = -127;
-		} else if (master.get_digital_new_press(DIGITAL_UP)) {
-			flywheel = 0;
-		} else {
-			flywheel = 127;
-		}
+        double ymotion = master.get_analog(ANALOG_LEFT_Y);
+        double xmotion = master.get_analog(ANALOG_LEFT_X);
+        double rotation = master.get_analog(ANALOG_RIGHT_X);
+        
+        // if roller pressed
+        if (master.get_digital(DIGITAL_L1)) {
+            rollerMtr = -115;
+        } else {
+            rollerMtr = 0;
+        }
+        
+        //flywheel
+        if (master.get_digital(DIGITAL_L2)) {
+                flywheel = -127;
+        } else {
+                flywheel = 127;
+        }
 
+        // if expand pressed
+        if (master.get_digital(DIGITAL_B)) {
+            pn_expand.set_value(1);
+        } else {
+            pn_expand.set_value(0);
+        }
+        //indexer
+        if (master.get_digital(DIGITAL_R2)) {
+            mtr_indexer = 127;
+        } else {
+            mtr_indexer = 0;
+        }
 
-		// if expand pressed
-		if (master.get_digital(DIGITAL_B)) {
-			pn_expand.set_value(1);
-		} else {
-			pn_expand.set_value(0);
-		}
-		//indexer
-		if (master.get_digital(DIGITAL_R2)) {
-			mtr_indexer = 80;
-		} else {
-			mtr_indexer = 0;
-		}
+        // intake
+        if (master.get_digital(DIGITAL_R1)) {
+            mtr_intake = 127;
+        } else {
+            mtr_intake = -127;
+        }
 
-		// intake
-		if (master.get_digital(DIGITAL_R1)) {
-			mtr_intake = 127;
-		} else {
-			mtr_intake = -127;
-		}
+        //drive
+        //strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
 
-		//drive
-		//strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
+        int LF = -ymotion - rotation;
+        int RF = ymotion - rotation;
+        int LB = -ymotion - rotation;
+        int RB = ymotion - rotation;
 
-		int LF = -ymotion - rotation;
-		int RF = ymotion - rotation;
-		int LB = -ymotion - rotation;
-		int RB = ymotion - rotation;
+        mtr_lf = LF;
+        mtr_rf = RF;
+        mtr_lb = LB;
+        mtr_rb = RB;
+        
+        pros::lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
+        pros::lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
+        pros::lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
+        pros::lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
+        pros::lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
+        pros::lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
 
-		mtr_lf = LF;
-		mtr_rf = RF;
-		mtr_lb = LB;
-		mtr_rb = RB;
-		
-		pros::lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
-		pros::lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
-		pros::lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
-		pros::lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
-		pros::lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
-		pros::lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
-
-		pros::delay(1);
-	}
+        pros::delay(1);
+    }
 }
