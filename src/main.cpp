@@ -6,6 +6,8 @@
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 double inches = 200;
+double rotation = 5.611; // rotation angle multiplier, multiply dist by this for any turn
+
 
 // motors
 pros::Motor mtr_lf(15);
@@ -79,16 +81,22 @@ void initialize() {
  */
 void disabled() {}
 
+double rotationAngle = 5.611;
 
-void turnRight90() {
-    moveLeftSide(510, 80);
-    moveRightSide(-510, 80);
+void turn(double angle, int power) {
+    moveLeftSide(-angle*rotation, power);
+    moveRightSide(angle*rotation, power);
+}
+
+/* void turnRight90() {
+    moveLeftSide(505, 80);
+    moveRightSide(-505, 80);
 
 }
 
 void turnLeft90() {
-    moveLeftSide(-510, 80);
-    moveRightSide(510, 80);
+    moveLeftSide(-505, 80);
+    moveRightSide(505, 80);
 }
 
 void flipRight() {
@@ -99,7 +107,7 @@ void flipRight() {
 void flipLeft() {
     moveLeftSide(-1010, 80);
     moveRightSide(1010, 80);
-}
+} */
 
 
 
@@ -108,133 +116,94 @@ void competition_initialize() {}
 
 void autonomous() {
 
-    turnRight90();
+ // LS auto                                                                                                                               
 
+    // roller 1
+    moveAll(-300, 80);
+    pros::delay(500);
+    rollerMtr.move_relative(480, 127);
+    pros::delay(600);
+    moveAll(300, 80);
+    pros::delay(800);
+
+	// 2 low goals
+
+    turn(-90, 80);
+    pros::delay(1000);
+	moveAll(370, 80);
+    flywheel = 110;
+    pros::delay(2000);
+    mtr_indexer.move_relative(3500, 90);
     pros::delay(2000);
 
-    turnLeft90();
+	// intake stack and shoot
 
-    pros::delay(2000);
+    moveLeftSide(770, 80);
+	moveRightSide(-770, 80);
+    pros::delay(1500);
+    mtr_intake = -127;
+    moveAll(-2800 , 127);
 
-    flipRight();
+    pros::delay(3000);
 
-    pros::delay(2000);
+    moveLeftSide(590, 80);
+	moveRightSide(-590, 80);                                                
+                
+    pros::delay(2000);                           
 
-    flipLeft();
+    flywheel = 127;
 
-// LS auto                                                                                                                               
+	moveAll(450, 80);
+
+    pros::delay(3000);
+
+    mtr_indexer.move_relative(3500, 110);
+
+    pros::delay(3000);
+
+	moveAll(-500, 80);
+
+    flywheel = 0;
+
+
+//RS auto
+    // moveAll(-3000, 80);
+
+    // pros::delay(100);
+
+    // turnRight90();
+
+    // pros::delay(100);
 
     // moveAll(-300, 80);
-
-    // pros::delay(500);
-
+    // pros::delay(100);
     // rollerMtr.move_relative(480, 127);
 
-    // pros::delay(600);
+    // pros::delay(100);
+    // moveAll(1000, 80);
 
-    // moveAll(250, 80);
+    // pros::delay(100);
 
-    // pros::delay(500);
-
-    // moveLeftSide(525, 80);
-    // moveRightSide(-525, 80);
-    
-    // pros::delay(500);
-
-    // moveAll(200, 80);
-
-    // flywheel = 110;
-
-    // pros::delay(2000);
-
-    // mtr_indexer.move_relative(3500, 127);
-
-    // pros::delay(2000);
-
-
-    // moveLeftSide(760, 80);
-    // moveRightSide(-760, 80);
-
-    // pros::delay(1500);
-
-    // mtr_intake = -80;
-
-    // moveAll(-3000 , 80);
-
-    
-
-    // pros::delay(3000);
-
-    // moveLeftSide(700, 80);git pu
-    // moveRightSide(-700, 80);                                                        
-                
-    // pros::delay(2000);                           
+    // moveRightSide(20, 80);
 
     // flywheel = 127;
-
-    // pros::delay(8000);
+    // pros::delay(1000);
 
     // mtr_indexer.move_relative(3500, 127);
 
-    // pros::delay(3000);
+    // pros::delay(500);
 
     // flywheel = 0;
 
-//RS auto
-    // mtr_lf.move_relative(inches*10, 100); // Move forwards
-    // mtr_lb.move_relative(inches*10, 100);
-    // mtr_rf.move_relative(-inches*10, 100);
-    // mtr_rb.move_relative(-inches*10, 100);
-    // pros::delay(100);
-    // mtr_lf.move_relative(inches*10, 100); // Move forwards
-    // mtr_lb.move_relative(inches*10, 100);
-    // mtr_rf.move_relative(-inches*10, 100);
-    // mtr_rb.move_relative(-inches*10, 100);
-    // pros::delay(100);
-    // mtr_lf.move_relative(inches*10, 100); // Move forwards
-    // mtr_lb.move_relative(inches*10, 100);
-    // mtr_rf.move_relative(-inches*10, 100);
-    // mtr_rb.move_relative(-inches*10, 100);
+    // turnLeft90();
+    // moveLeftSide(200, 80);
+    // pros::delay(500);
 
-    // pros::delay(1000);
+    // mtr_intake = -127;
 
-    // mtr_lf.move_relative(-570, 50); // Turn clockwise
-    // mtr_lb.move_relative(-570, 50);
-    // mtr_rf.move_relative(-570, 50);
-    // mtr_rb.move_relative(-570, 50);
 
-    // pros::delay(1000);
 
-    // mtr_lf.move_relative(inches*2, 80); // Move forwards
-    // mtr_lb.move_relative(inches*2, 80);
-    // mtr_rf.move_relative(-inches*2, 80);
-    // mtr_rb.move_relative(-inches*2, 80);
 
-    // pros::delay(1000);
-
-    // rollerMtr.move_relative(470, 127);
-
-    // pros::delay(1000);
-
-    // mtr_lf.move_relative(-inches*3, 80); // Move back
-    // mtr_lb.move_relative(-inches*3, 80);
-    // mtr_rf.move_relative(inches*3, 80);
-    // mtr_rb.move_relative(inches*3, 80);
-
-    // pros::delay(1000);
-
-    // mtr_lf.move_relative(600, 80); // Turn clockwise
-    // mtr_lb.move_relative(600, 80);
-    // mtr_rf.move_relative(600, 80);
-    // mtr_rb.move_relative(600, 80);
-
-    // pros::delay(200);
-
-    // flywheel = 115;
-
-    // pros::delay(3000);
-
-    // mtr_indexer.move_relative(5000, 127);
 }
 
 /**
