@@ -15,17 +15,13 @@ pros::Motor mtr_rf(19);
 pros::Motor mtr_rb(20);
 
 pros::Motor rollerMtr(3);
-//pros::Motor expansionMtr(1);
 
 pros::Motor mtr_intake(9);
 pros::Motor flywheel(10);
 pros::Motor mtr_indexer(7);
 
 // pneumatics+
-// pros::ADIDigitalOut pn_indexer ('C');
 pros::ADIDigitalOut pn_expand ('A');
-//pros::ADIDigital
-//pros::ADIDigitalOb ut pn_expand2 ('B');
 
 /**
  * A callback function for LLEMU's center button.
@@ -113,27 +109,19 @@ void autonomous() {
         pros::delay(100);
         pn_expand.set_value(1);*/
     }
-    if (autonToRun == 1) {
+    else if (autonToRun == 1) {
         // RS auto
-        mtr_lf.move_relative(inches*13, 100); // Move forwards
-        mtr_lb.move_relative(inches*13, 100);
-        mtr_rf.move_relative(-inches*13, 100);
-        mtr_rb.move_relative(-inches*13, 100);
+        moveAll(inches*13, 100);
         pros::delay(100);
 
         pros::delay(1000);
 
-        mtr_lf.move_relative(-570, 50); // Turn clockwise
-        mtr_lb.move_relative(-570, 50);
-        mtr_rf.move_relative(-570, 50);
-        mtr_rb.move_relative(-570, 50);
+        moveLeftSide(570, 50); // counterclock wise
+        moveRightSide(-570, 50);
 
         pros::delay(1000);
 
-        mtr_lf.move_relative(inches*2, 80); // Move forwards
-        mtr_lb.move_relative(inches*2, 80);
-        mtr_rf.move_relative(-inches*2, 80);
-        mtr_rb.move_relative(-inches*2, 80);
+        moveAll(inches*2, 80);
 
         pros::delay(1000);
 
@@ -141,18 +129,12 @@ void autonomous() {
 
         pros::delay(1000);
 
-        mtr_lf.move_relative(-inches*3, 80); // Move back
-        mtr_lb.move_relative(-inches*3, 80);
-        mtr_rf.move_relative(inches*3, 80);
-        mtr_rb.move_relative(inches*3, 80);
+        moveAll(-inches*3, 80);
 
         pros::delay(1000);
 
-        mtr_lf.move_relative(600, 80); // Turn clockwise
-        mtr_lb.move_relative(600, 80);
-        mtr_rf.move_relative(600, 80);
-        mtr_rb.move_relative(600, 80);
-
+        moveLeftSide(-600, 80); //clockwise
+        moveRightSide(600, 80);
         pros::delay(200);
 
         flywheel = 115;
