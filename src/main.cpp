@@ -136,7 +136,6 @@ void autonomous() {
         moveLeftSide(-600, 80); //clockwise
         moveRightSide(600, 80);
         pros::delay(200);
-
         flywheel = 115;
 
         pros::delay(3000);
