@@ -3,25 +3,15 @@
 #include <math.h>
 #include <string>
 #include "autonFunctions.h"
+#include "motorDef.h"
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
-double inches = 200;
-
-// motors
-pros::Motor mtr_lf(15);
-pros::Motor mtr_lb(16);
-pros::Motor mtr_rf(19);
-pros::Motor mtr_rb(20);
-
-pros::Motor rollerMtr(3);
-
-pros::Motor mtr_intake(9);
-pros::Motor flywheel(10);
-pros::Motor mtr_indexer(7);
-
 // pneumatics+
+// pros::ADIDigitalOut pn_indexer ('C');
 pros::ADIDigitalOut pn_expand ('A');
+//pros::ADIDigital
+//pros::ADIDigitalOb ut pn_expand2 ('B');
 
 /**
  * A callback function for LLEMU's center button.
@@ -59,90 +49,11 @@ void initialize() {
  */
 void disabled() {}
 
-void competition_initialize() {}
-
-int autonToRun = 0;
-
 void autonomous() {
-
-    if (autonToRun == 0) {
-        // LS auto                                                                                                                               
-
-        // roller 1
-        moveAll(-300, 80);
-        pros::delay(500);
-        rollerMtr.move_relative(480, 127);
-        pros::delay(600);
-        moveAll(200, 80);
-        pros::delay(800);
-
-        // 2 low goals
-        turnRight90();
-        pros::delay(1000);
-        moveAll(550, 80);
-        flywheel = 110;
-        pros::delay(2000);
-        mtr_indexer.move_relative(3500, 127);
-        pros::delay(2000);
-
-        /*intake stack and shoot
-        moveLeftSide(725, 80);
-        moveRightSide(-725, 80);
-        pros::delay(1500);
-        mtr_intake = -127;
-        moveAll(-3000 , 127);
-        pros::delay(3000);
-        moveLeftSide(585, 80);
-        moveRightSide(-585, 80);                                                 
-        pros::delay(1700);                          
-        flywheel = 127;
-        pros::delay(1500);
-        moveAll(100, 127);
-        mtr_indexer.move_relative(3500, 127);
-        pros::delay(3000);
-        moveAll(-500, 80);
-        flywheel = 0;
-        moveLeftSide(-585, 80);
-        moveRightSide(585, 80);
-        moveLeftSide(750, 80);
-        moveRightSide(-750, 80);
-        pros::delay(100);
-        pn_expand.set_value(1);*/
-    }
-    else if (autonToRun == 1) {
-        // RS auto
-        moveAll(inches*13, 100);
-        pros::delay(100);
-
-        pros::delay(1000);
-
-        moveLeftSide(570, 50); // counterclock wise
-        moveRightSide(-570, 50);
-
-        pros::delay(1000);
-
-        moveAll(inches*2, 80);
-
-        pros::delay(1000);
-
-        rollerMtr.move_relative(470, 127);
-
-        pros::delay(1000);
-
-        moveAll(-inches*3, 80);
-
-        pros::delay(1000);
-
-        moveLeftSide(-600, 80); //clockwise
-        moveRightSide(600, 80);
-        pros::delay(200);
-        flywheel = 115;
-
-        pros::delay(3000);
-
-        mtr_indexer.move_relative(5000, 127);
-    }
+    drivePID();
 }
+
+void competition_initialize() {}
 
 /**
  * Runs the operator control code. This function will be started in its own task
