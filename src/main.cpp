@@ -67,7 +67,7 @@ void on_center_button() {
  */
 void initialize() {
     pros::lcd::initialize();
-    pros::lcd::set_text(1, "Hello PROS User!");
+    pros::lcd::set_text(1, "PUSHBOT META");
 
     pros::lcd::register_btn1_cb(on_center_button);
 }
@@ -105,132 +105,161 @@ void flipLeft() {
 
 void competition_initialize() {}
 
+int autonToRun = 0;
+
+class Button
+{
+  public:
+    int x, y, width, height;
+    std::string text;
+    vex::color buttonColor, textColor;
+    
+    Button(int x, int y, int width, int height, std::string text, vex::color buttonColor, vex::color textColor)
+    : x(x), y(y), width(width), height(height), text(text), buttonColor(buttonColor), textColor(textColor){}
+
+    void render()
+    {
+      Brain.Screen.drawRectangle(x, y, width, height, buttonColor);
+      Brain.Screen.printAt(x + 10, y + 10, false, text.c_str());
+    }
+
+    bool isClicked()
+    {
+      if(Brain.Screen.pressing() && Brain.Screen.xPosition() >= x && Brain.Screen.xPosition() <= x + width &&
+      Brain.Screen.yPosition() >= y && Brain.Screen.yPosition() <= y + width) return true;
+      return false;
+    }
+};
+
+Button autonButtons[] = {
+  Button(10, 10, 150, 50, "left auto", vex::green, vex::black),
+  Button(170, 10, 150, 50, "right auto", vex::white, vex::black),
+
+};
+
+int main()
+{
+  Competition.autonomous(autonomous);
+  Competition.drivercontrol(usercontrol);
+
+  while(true)
+  {
+    Brain.Screen.clearScreen(vex::white);
+
+    if(!Competition.isEnabled())
+    {
+      for(int i = 0; i < 2; i++)
+      {
+        autonButtons[i].render();
+        if(autonButtons[i].isClicked())
+        {
+          autonButtons[autonToRun].buttonColor = vex::white;
+          autonButtons[i].buttonColor = vex::green;
+          autonToRun = i;
+        }
+      }
+    }
+
+    Brain.Screen.render();
+    vex::task::sleep(7);
+  }
+}
+
 
 void autonomous() {
 
+    if (autonToRun == 0) {
+        // LS auto                                                                                                                               
 
-// LS auto                                                                                                                               
+        // roller 1
+        moveAll(-300, 80);
+        pros::delay(500);
+        rollerMtr.move_relative(480, 127);
+        pros::delay(600);
+        moveAll(200, 80);
+        pros::delay(800);
 
-    // roller 1
-    moveAll(-300, 80);
+        // 2 low goals
+        turnRight90();
+        pros::delay(1000);
+        moveAll(550, 80);
+        flywheel = 110;
+        pros::delay(2000);
+        mtr_indexer.move_relative(3500, 127);
+        pros::delay(2000);
 
-    pros::delay(500);
+        // intake stack and shoot
+        // moveLeftSide(725, 80);
+        // moveRightSide(-725, 80);
+        // pros::delay(1500);
+        // mtr_intake = -127;
+        // moveAll(-3000 , 127);
+        // pros::delay(3000);
+        // moveLeftSide(585, 80);
+        // moveRightSide(-585, 80);                                                 
+        // pros::delay(1700);                          
+        // flywheel = 127;
+        // pros::delay(1500);
+        // moveAll(100, 127);
+        // mtr_indexer.move_relative(3500, 127);
+        // pros::delay(3000);
+        // moveAll(-500, 80);
+        // flywheel = 0;
+        // moveLeftSide(-585, 80);
+        // moveRightSide(585, 80);
+        // moveLeftSide(750, 80);
+        // moveRightSide(-750, 80);
+        // pros::delay(100);
+        // pn_expand.set_value(1);
+    }
+    if (autonToRun == 1) {
+        // RS auto
+        // mtr_lf.move_relative(inches*13, 100); // Move forwards
+        // mtr_lb.move_relative(inches*13, 100);
+        // mtr_rf.move_relative(-inches*13, 100);
+        // mtr_rb.move_relative(-inches*13, 100);
+        // pros::delay(100);
 
-    rollerMtr.move_relative(480, 127);
+        // pros::delay(1000);
 
-    pros::delay(600);
+        // mtr_lf.move_relative(-570, 50); // Turn clockwise
+        // mtr_lb.move_relative(-570, 50);
+        // mtr_rf.move_relative(-570, 50);
+        // mtr_rb.move_relative(-570, 50);
 
-    moveAll(200, 80);
+        // pros::delay(1000);
 
-    pros::delay(800);
+        // mtr_lf.move_relative(inches*2, 80); // Move forwards
+        // mtr_lb.move_relative(inches*2, 80);
+        // mtr_rf.move_relative(-inches*2, 80);
+        // mtr_rb.move_relative(-inches*2, 80);
 
-	// 2 low goals
+        // pros::delay(1000);
 
-    turnRight90();
-    
-    pros::delay(1000);
+        // rollerMtr.move_relative(470, 127);
 
-	moveAll(550, 80);
+        // pros::delay(1000);
 
-    flywheel = 110;
+        // mtr_lf.move_relative(-inches*3, 80); // Move back
+        // mtr_lb.move_relative(-inches*3, 80);
+        // mtr_rf.move_relative(inches*3, 80);
+        // mtr_rb.move_relative(inches*3, 80);
 
-    pros::delay(2000);
+        // pros::delay(1000);
 
-    mtr_indexer.move_relative(3500, 127);
+        // mtr_lf.move_relative(600, 80); // Turn clockwise
+        // mtr_lb.move_relative(600, 80);
+        // mtr_rf.move_relative(600, 80);
+        // mtr_rb.move_relative(600, 80);
 
-    pros::delay(2000);
+        // pros::delay(200);
 
-	// intake stack and shoot
+        // flywheel = 115;
 
-    // moveLeftSide(725, 80);
-	// moveRightSide(-725, 80);
+        // pros::delay(3000);
 
-    // pros::delay(1500);
-
-    // mtr_intake = -127;
-
-    // moveAll(-3000 , 127);
-
-    
-
-    // pros::delay(3000);
-
-    // moveLeftSide(585, 80);
-	// moveRightSide(-585, 80);                                                
-                
-    // pros::delay(1700);                           
-
-    // flywheel = 127;
-
-    // pros::delay(1500);
-
-    // moveAll(100, 127);
-
-    // mtr_indexer.move_relative(3500, 127);
-
-    // pros::delay(3000);
-
-	// moveAll(-500, 80);
-
-    // flywheel = 0;
-    
-    // moveLeftSide(-585, 80);
-    // moveRightSide(585, 80);
-
-    //  moveLeftSide(750, 80);
-	// moveRightSide(-750, 80);
-
-    // pros::delay(100);
-
-    // pn_expand.set_value(1);
-
-
-// RS auto
-    // mtr_lf.move_relative(inches*13, 100); // Move forwards
-    // mtr_lb.move_relative(inches*13, 100);
-    // mtr_rf.move_relative(-inches*13, 100);
-    // mtr_rb.move_relative(-inches*13, 100);
-    // pros::delay(100);
-
-    // pros::delay(1000);
-
-    // mtr_lf.move_relative(-570, 50); // Turn clockwise
-    // mtr_lb.move_relative(-570, 50);
-    // mtr_rf.move_relative(-570, 50);
-    // mtr_rb.move_relative(-570, 50);
-
-    // pros::delay(1000);
-
-    // mtr_lf.move_relative(inches*2, 80); // Move forwards
-    // mtr_lb.move_relative(inches*2, 80);
-    // mtr_rf.move_relative(-inches*2, 80);
-    // mtr_rb.move_relative(-inches*2, 80);
-
-    // pros::delay(1000);
-
-    // rollerMtr.move_relative(470, 127);
-
-    // pros::delay(1000);
-
-    // mtr_lf.move_relative(-inches*3, 80); // Move back
-    // mtr_lb.move_relative(-inches*3, 80);
-    // mtr_rf.move_relative(inches*3, 80);
-    // mtr_rb.move_relative(inches*3, 80);
-
-    // pros::delay(1000);
-
-    // mtr_lf.move_relative(600, 80); // Turn clockwise
-    // mtr_lb.move_relative(600, 80);
-    // mtr_rf.move_relative(600, 80);
-    // mtr_rb.move_relative(600, 80);
-
-    // pros::delay(200);
-
-    // flywheel = 115;
-
-    // pros::delay(3000);
-
-    // mtr_indexer.move_relative(5000, 127);
+        // mtr_indexer.move_relative(5000, 127);
+    }
 }
 
 /**
