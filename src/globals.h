@@ -12,4 +12,6 @@ extern Motor mtr_intake;
 extern Motor flywheel;
 extern Motor mtr_indexer;
 
+extern IMU imu_sensor;
+
 extern ADIDigitalOut pn_expand, pn_expand2;

@@ -14,5 +14,7 @@ Motor mtr_intake(9, E_MOTOR_GEARSET_06, false);
 Motor flywheel(10, E_MOTOR_GEARSET_06, false);
 Motor mtr_indexer(7, E_MOTOR_GEARSET_18, false);
 
+IMU imu_sensor(5);
+
 ADIDigitalOut pn_expand('A');
 ADIDigitalOut pn_expand2('B');
