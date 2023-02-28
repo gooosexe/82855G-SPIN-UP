@@ -5,30 +5,32 @@
 #include "autonFunctions.h"
 #include "globals.h"
 
-pros::Controller master(pros::E_CONTROLLER_MASTER);
+using namespace pros;
+
+Controller master(E_CONTROLLER_MASTER);
 
 // pneumatics+
-// pros::ADIDigitalOut pn_indexer ('C');
+// ADIDigitalOut pn_indexer ('C');
 
-//pros::ADIDigital
-//pros::ADIDigitalOb ut pn_expand2 ('B');
+//ADIDigital
+//ADIDigitalOb ut pn_expand2 ('B');
 
 
 void on_center_button() {
     static bool pressed = false;
     pressed = !pressed;
     if (pressed) {
-        pros::lcd::set_text(2, "I was pressed!");
+        lcd::set_text(2, "I was pressed!");
     } else {
-        pros::lcd::clear_line(2);
+        lcd::clear_line(2);
     }
 }
 
 void initialize() {
-    pros::lcd::initialize();
-    pros::lcd::set_text(1, "PUSHBOT META");
+    lcd::initialize();
+    lcd::set_text(1, "PUSHBOT META");
 
-    pros::lcd::register_btn1_cb(on_center_button);
+    lcd::register_btn1_cb(on_center_button);
 }
 
 /**
@@ -39,7 +41,7 @@ void initialize() {
 void disabled() {}
 
 void autonomous() {
-    drivePID();
+    
 }
 
 void competition_initialize() {}
@@ -62,9 +64,9 @@ double strafeAngle; // stores the angle the left stick is pointing
 
 void opcontrol() {
     while (true) {
-        pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-                         (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-                         (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
+        lcd::print(0, "%d %d %d", (lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
+                         (lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
+                         (lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
 
         double ymotion = master.get_analog(ANALOG_LEFT_Y);
         double xmotion = master.get_analog(ANALOG_LEFT_X);
@@ -117,14 +119,14 @@ void opcontrol() {
         mtr_lb = LB;
         mtr_rb = RB;
         
-        pros::lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
-        pros::lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
-        pros::lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
-        pros::lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
-        pros::lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
-        pros::lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
+        lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
+        lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
+        lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
+        lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
+        lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
+        lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
 
-        pros::delay(1);
+        delay(1);
     }
 }
 

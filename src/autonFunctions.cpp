@@ -1,60 +1,94 @@
 #include "api.h"
 #include "globals.h"
 #include "autonFunctions.h"
+#include "globals.h"
 
-double straightPID(double propGain, double derivGain, double integGain, double propError, double derivError, double integError) {
+const double inchConstant = (1/(4.125*M_PI)) * (3/7);
+const double errorThreshold = 0.25;
+
+double PID(double propError, double derivError, double integError) {
     double velocity;
-    
     velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively
-
     return velocity;
 };
 
-void moveLeftSide(int distance, int power) {
-    mtr_lf.move_relative(-distance, power);
-    mtr_lb.move_relative(-distance, power);
+void resetMotors() {
+    mtr_lb.tare_position();
+    mtr_rb.tare_position();
+    delay(50);
 }
 
-void moveRightSide(int distance, int power) {
-    mtr_rf.move_relative(distance, power);
-    mtr_rb.move_relative(distance, power);
+// all distances will be inputted as number of inches
+// also this is an attempt at implementing pid but it might not work so hang tight
+
+void moveRightSide(double power) {
+    mtr_rb = power;
+    mtr_rf = power;
 }
 
-void moveAll(int distance, int power) {
-    mtr_lf.move_relative(-distance, power);
-    mtr_lb.move_relative(-distance, power);
-    mtr_rf.move_relative(distance, power);
-    mtr_rb.move_relative(distance, power);
+void moveLeftSide(double power) {
+    mtr_lb = power;
+    mtr_lf = power; 
 }
 
-void turnRight90() {
-    moveLeftSide(510, 80);
-    moveRightSide(-510, 80);
+void moveStraight(double distance) {
+    resetMotors();
+    leftpE = distance * inchConstant;
+    rightpE = distance * inchConstant;
+    leftPrevE = 0;
+    rightPrevE = 0;
+
+    while (leftpE > errorThreshold || rightpE > errorThreshold) {
+        leftPrevE = leftpE;
+        rightPrevE = rightpE;
+
+        leftpE = distance - mtr_lb.get_position();
+        rightpE = distance - mtr_rb.get_position();
+        
+        leftiE += leftpE;
+        rightiE += rightpE;
+
+        leftdE = leftPrevE - leftpE;
+        rightdE = rightPrevE - rightpE;
+
+        moveLeftSide(PID(leftpE, leftdE, leftiE));
+        moveRightSide(PID(rightpE, leftdE, leftiE));
+    }
+
+    moveLeftSide(distance);
+
 }
 
-void turnLeft90() {
-    moveLeftSide(-510, 80);
-    moveRightSide(510, 80);
-}
+// the following four functions have to be changed because of changed values but this should be easy peasy
+// void turnRight90() {
+//     moveLeftSide(510, 80);
+//     moveRightSide(-510, 80);
+// }
 
-void flipRight() {
-    moveLeftSide(1010, 80);
-    moveRightSide(-1010, 80);
-}
+// void turnLeft90() {
+//     moveLeftSide(-510, 80);
+//     moveRightSide(510, 80);
+// }
 
-void flipLeft() {
-    moveLeftSide(-1010, 80);
-    moveRightSide(1010, 80);
-}
+// void flipRight() {
+//     moveLeftSide(1010, 80);
+//     moveRightSide(-1010, 80);
+// }
 
+// void flipLeft() {
+//     moveLeftSide(-1010, 80);
+//     moveRightSide(1010, 80);
+// }
+
+// REMEMBER TO CHANGE THE VALUES HERE BECAUSE ALL OF THEM ARE IN INCHES NOW
 void skillsAuton() {
     //move to roller
-    moveAll(-inches*13.5, 100);
+    moveAll(13.5, 100);
     pros::delay(2000);
     moveLeftSide(520, 50); // clockwise
     moveRightSide(-520, 50);
     pros::delay(800);
-    moveAll(-inches*2, 80);
+    moveAll(2, 80);
     pros::delay(1000);
 
     // do roller
@@ -62,7 +96,7 @@ void skillsAuton() {
     pros::delay(1000);
     
     // shoot low goals
-    moveAll(inches*3, 80); // move back
+    moveAll(3, 80); // move back
     pros::delay(1000);
     moveLeftSide(-670, 80); // face goals, counter clockwise, greater value = more towards outside
     moveRightSide(670, 80);
@@ -164,10 +198,10 @@ void leftAuton() {
 }
 
 void rightAuton(){
-    mtr_lf.move_relative(inches*13, 100); // Move forwards
-    mtr_lb.move_relative(inches*13, 100);
-    mtr_rf.move_relative(-inches*13, 100);
-    mtr_rb.move_relative(-inches*13, 100);
+    mtr_lf.move_relative(13, 100); // Move forwards
+    mtr_lb.move_relative(13, 100);
+    mtr_rf.move_relative(13, 100);
+    mtr_rb.move_relative(13, 100);
     pros::delay(100);
 
     pros::delay(1000);
@@ -179,10 +213,10 @@ void rightAuton(){
 
     pros::delay(1000);
 
-    mtr_lf.move_relative(inches*2, 80); // Move forwards
-    mtr_lb.move_relative(inches*2, 80);
-    mtr_rf.move_relative(-inches*2, 80);
-    mtr_rb.move_relative(-inches*2, 80);
+    mtr_lf.move_relative(2, 80); // Move forwards
+    mtr_lb.move_relative(2, 80);
+    mtr_rf.move_relative(2, 80);
+    mtr_rb.move_relative(2, 80);
 
     pros::delay(1000);
 
@@ -190,10 +224,10 @@ void rightAuton(){
 
     pros::delay(1000);
 
-    mtr_lf.move_relative(-inches*3, 80); // Move back
-    mtr_lb.move_relative(-inches*3, 80);
-    mtr_rf.move_relative(inches*3, 80);
-    mtr_rb.move_relative(inches*3, 80);
+    mtr_lf.move_relative(3, 80); // Move back
+    mtr_lb.move_relative(3, 80);
+    mtr_rf.move_relative(3, 80);
+    mtr_rb.move_relative(3, 80);
 
     pros::delay(1000);
 
