@@ -1,8 +1,8 @@
 #include "api.h"
-#include "motorDef.h"
+#include "globals.h"
 #include "autonFunctions.h"
 
-double inches = 200;
+/* double inches = 200;
 
 double kP = 0.7;
 double kI = 0;
@@ -12,7 +12,7 @@ double turn_kP = 0.7;
 double turn_kI = 0;
 double turn_kD = 0;
 
-    // PID VARIABLES
+// PID VARIABLES
 int error;
 int prevError;
 int deriv;
@@ -25,7 +25,8 @@ bool enablePID = true;
 bool resetDriveSensors = false;
 
 
-int drivePID() {
+void drivePID(double kP, double kI, double kD) {
+    
     while(enablePID) {
         if (resetDriveSensors) {
             resetDriveSensors = false;
@@ -76,9 +77,10 @@ int drivePID() {
             turn_prevError = turn_error;
 
             pros::delay(20);
-        }
-    return 1;
     }
+}*/
+
+
 
 void moveLeftSide(int distance, int power) {
     mtr_lf.move_relative(-distance, power);
@@ -100,7 +102,6 @@ void moveAll(int distance, int power) {
 void turnRight90() {
     moveLeftSide(510, 80);
     moveRightSide(-510, 80);
-
 }
 
 void turnLeft90() {
@@ -118,15 +119,14 @@ void flipLeft() {
     moveRightSide(1010, 80);
 }
 
-void testPID() {
+/*void testPID() {
     drivePID();
 
     targetPos = 1000;
     turn_targetPos = 600;
-}
+}*/
 
 void skillsAuton() {
-    
     //move to roller
     moveAll(-inches*13.5, 100);
     pros::delay(2000);
@@ -135,9 +135,11 @@ void skillsAuton() {
     pros::delay(800);
     moveAll(-inches*2, 80);
     pros::delay(1000);
+
     // do roller
     rollerMtr.move_relative(850, 127);
     pros::delay(1000);
+    
     // shoot low goals
     moveAll(inches*3, 80); // move back
     pros::delay(1000);
@@ -150,6 +152,7 @@ void skillsAuton() {
     pros::delay(2000);
     mtr_indexer.move_relative(3000, 127);
     pros::delay(2000);
+    
     // intake 3 discs
     moveLeftSide(-865, 80); // turn (greater value, towards alliance low goal)
     moveRightSide(865, 80);
@@ -157,12 +160,14 @@ void skillsAuton() {
     mtr_intake = -127;
     moveAll(-3800, 127);
     pros::delay(4000);
+    
     // shoot high goals
     turnLeft90();  
     pros::delay(1500);
     moveAll(100, 127);
     mtr_indexer.move_relative(3500, 90);
     pros::delay(3000);
+    
     // intake stack
     moveAll(-100, 127);
     moveLeftSide(-585, 80);
@@ -170,6 +175,7 @@ void skillsAuton() {
     pros::delay(3000);
     moveAll(-2000, 127);
     pros::delay(3000);
+    
     //shoot high goal 2nd time
     moveLeftSide(-520, 80); // face high goal, counter clockwise
     moveRightSide(520, 80);  
@@ -177,6 +183,7 @@ void skillsAuton() {
     moveAll(200, 127);
     mtr_indexer.move_relative(3500, 90);
     pros::delay(3000);
+    
     // do left side roller
     moveLeftSide(750, 80); // turn clockwise
     moveRightSide(-750, 80);
@@ -213,7 +220,7 @@ void leftAuton() {
     moveAll(550, 80);
     flywheel = 110;
     pros::delay(2000);
-            mtr_indexer.move_relative(3500, 127);
+    mtr_indexer.move_relative(3500, 127);
     pros::delay(2000);
 
     // intake stack and shoot
@@ -242,98 +249,71 @@ void rightAuton(){
     mtr_rb.move_relative(-inches*13, 100);
     pros::delay(100);
 
-
     pros::delay(1000);
-
 
     mtr_lf.move_relative(-550, 50); // Turn clockwise
     mtr_lb.move_relative(-550, 50);
     mtr_rf.move_relative(-550, 50);
     mtr_rb.move_relative(-550, 50);
 
-
     pros::delay(1000);
-
 
     mtr_lf.move_relative(inches*2, 80); // Move forwards
     mtr_lb.move_relative(inches*2, 80);
     mtr_rf.move_relative(-inches*2, 80);
     mtr_rb.move_relative(-inches*2, 80);
 
-
     pros::delay(1000);
-
 
     rollerMtr.move_relative(470, 127);
 
-
     pros::delay(1000);
-
 
     mtr_lf.move_relative(-inches*3, 80); // Move back
     mtr_lb.move_relative(-inches*3, 80);
     mtr_rf.move_relative(inches*3, 80);
     mtr_rb.move_relative(inches*3, 80);
 
-
     pros::delay(1000);
-
 
     mtr_lf.move_relative(620, 80); // Turn clockwise
     mtr_lb.move_relative(620, 80);
     mtr_rf.move_relative(620, 80);
     mtr_rb.move_relative(620, 80);
 
-
     pros::delay(500);
-
 
     moveAll(550, 80);
 
-
     pros::delay(200);
-
 
     flywheel = 115;
 
-
     pros::delay(2000);
-
 
     mtr_indexer.move_relative(5000, 127);
-
-
+    
     pros::delay(2000);
-
 
     moveLeftSide(-820, 80);
     moveRightSide(820, 80);
 
-
     pros::delay(1000);
 
-
     mtr_intake = -127;
-
 
     moveAll(-3500, 127);
    
     pros::delay(3500);
 
-
     moveLeftSide(-585, 80);
     moveRightSide(585, 80);  
 
-
     pros::delay(1500);
-
 
     moveAll(100, 127);
 
-
     mtr_indexer.move_relative(3500, 127);
-
-
 }
 
 

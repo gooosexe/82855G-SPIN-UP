@@ -3,22 +3,17 @@
 #include <math.h>
 #include <string>
 #include "autonFunctions.h"
-#include "motorDef.h"
+#include "globals.h"
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 // pneumatics+
 // pros::ADIDigitalOut pn_indexer ('C');
-pros::ADIDigitalOut pn_expand ('A');
+
 //pros::ADIDigital
 //pros::ADIDigitalOb ut pn_expand2 ('B');
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
+
 void on_center_button() {
     static bool pressed = false;
     pressed = !pressed;
@@ -29,12 +24,6 @@ void on_center_button() {
     }
 }
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
 void initialize() {
     pros::lcd::initialize();
     pros::lcd::set_text(1, "PUSHBOT META");

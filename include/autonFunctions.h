@@ -11,7 +11,7 @@ void moveAll(int distance, int power);
 
 void skillsAuton();
 
-int drivePID();
+void drivePID();
 
 void leftAuton();
 
