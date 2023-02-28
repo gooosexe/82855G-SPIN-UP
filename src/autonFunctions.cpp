@@ -2,85 +2,13 @@
 #include "globals.h"
 #include "autonFunctions.h"
 
-/* double inches = 200;
-
-double kP = 0.7;
-double kI = 0;
-double kD = 0;
-
-double turn_kP = 0.7;
-double turn_kI = 0;
-double turn_kD = 0;
-
-// PID VARIABLES
-int error;
-int prevError;
-int deriv;
-int totalError;
-int targetPos = 100;
-
-int turn_error, turn_prevError, turn_deriv, turn_totalError, turn_targetPos;
-
-bool enablePID = true;
-bool resetDriveSensors = false;
-
-
-void drivePID(double kP, double kI, double kD) {
+double straightPID(double propGain, double derivGain, double integGain, double propError, double derivError, double integError) {
+    double velocity;
     
-    while(enablePID) {
-        if (resetDriveSensors) {
-            resetDriveSensors = false;
-            mtr_lf.tare_position();
-            mtr_lb.tare_position();
-            mtr_rf.tare_position();
-            mtr_rb.tare_position();
-        }
+    velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively
 
-        int lfPos = mtr_lf.get_position();
-        int lbPos = mtr_lb.get_position();
-        int rfPos = mtr_rf.get_position();
-        int rbPos = mtr_rb.get_position();
-
-            int avgPos = (lfPos + lbPos + rfPos + rbPos)/4;
-
-            // POTENTIAL
-            error = avgPos - targetPos;
-
-            // DERIVATIVE
-            deriv = error - prevError;
-
-            // INTEGRAL
-            totalError += error;
-
-            double latMotion = error * kP + deriv * kD + totalError * kI;
-
-            // turn difference
-            int turnDifference = (((lfPos -rfPos)/2) + ((lbPos - rbPos)/2))/2;
-
-            // turn potential
-            turn_error = turnDifference - targetPos;
-
-            // turn derivative
-            turn_deriv = turn_error - turn_prevError;
-
-            // integral
-            turn_totalError += turn_error;
-
-            double turnMotion = turn_error * kP + turn_deriv * kD + turn_totalError * kI;
-
-            mtr_lf.move_voltage(latMotion + turnMotion);
-            mtr_lb.move_voltage(latMotion + turnMotion);
-            mtr_rf.move_voltage(latMotion - turnMotion);
-            mtr_rb.move_voltage(latMotion - turnMotion);
-
-            prevError = error;
-            turn_prevError = turn_error;
-
-            pros::delay(20);
-    }
-}*/
-
-
+    return velocity;
+};
 
 void moveLeftSide(int distance, int power) {
     mtr_lf.move_relative(-distance, power);
@@ -118,13 +46,6 @@ void flipLeft() {
     moveLeftSide(-1010, 80);
     moveRightSide(1010, 80);
 }
-
-/*void testPID() {
-    drivePID();
-
-    targetPos = 1000;
-    turn_targetPos = 600;
-}*/
 
 void skillsAuton() {
     //move to roller

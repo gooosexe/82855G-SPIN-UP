@@ -2,6 +2,7 @@
 #include "api.h"
 
 extern double inches;
+extern double eP, eD, eI; // distance error, distance error rate, and  
 
 void moveLeftSide(int distance, int power);
 
@@ -11,7 +12,7 @@ void moveAll(int distance, int power);
 
 void skillsAuton();
 
-void drivePID();
+void straightPID(double pGain, double dGain, double iGain);
 
 void leftAuton();
 
