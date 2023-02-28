@@ -7,6 +7,16 @@ const double inchConstant = (1/(4.125*M_PI)) * (3/7);
 const double errorThreshold = 0.25;
 const double angleThreshold = 0.2;
 
+double propGain = 1;
+double derivGain = 1;
+double integGain = 0.001;
+
+double rightpE, rightdE, rightiE;
+double leftpE, leftdE, leftiE;
+double anglepE, angledE, angleiE;
+double leftPrevE, rightPrevE, anglePrevE;
+        
+
 double PID(double propError, double derivError, double integError) {
     double velocity;
     velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively
@@ -84,7 +94,7 @@ void skillsAuton() {
 }
 
 void leftAuton() {
-    
+    moveStraight(24);
 }
 
 void rightAuton(){

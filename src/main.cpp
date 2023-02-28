@@ -41,26 +41,10 @@ void initialize() {
 void disabled() {}
 
 void autonomous() {
-    
+    leftAuton();
 }
 
 void competition_initialize() {}
-
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
-
-double strafeAngle; // stores the angle the left stick is pointing
 
 void opcontrol() {
     while (true) {
@@ -119,11 +103,8 @@ void opcontrol() {
         mtr_lb = LB;
         mtr_rb = RB;
         
-        lcd::set_text(0, "Left stick X: " + std::to_string(xmotion));
-        lcd::set_text(1, "Left stick Y: " + std::to_string(ymotion));
         lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
         lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
-        lcd::set_text(4, "Strafe angle: " + std::to_string(strafeAngle));
         lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
 
         delay(1);

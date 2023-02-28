@@ -18,7 +18,7 @@ void resetMotors();
 
 void moveRightSide(int power);
 
-void moveStraight(int distance);
+void moveStraight(double distance);
 
 void moveTurn(double angle);
 
