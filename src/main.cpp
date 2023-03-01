@@ -4,6 +4,7 @@
 #include <string>
 #include "autonFunctions.h"
 #include "globals.h"
+#include "pros/llemu.hpp"
 
 using namespace pros;
 
@@ -45,6 +46,8 @@ void autonomous() {
 }
 
 void competition_initialize() {}
+
+double velocity;
 
 void opcontrol() {
     while (true) {
@@ -103,10 +106,8 @@ void opcontrol() {
         mtr_lb = LB;
         mtr_rb = RB;
         
-        lcd::set_text(2, "LF power : " + std::to_string(mtr_lf.get_power()) + "\t RB power: "+ std::to_string(mtr_rb.get_power()));
-        lcd::set_text(3, "LB power: " + std::to_string(mtr_lb.get_power()) + "\t RF power: "+ std::to_string(mtr_rf.get_power()));
-        lcd::set_text(5, "Flywheel speed: " + std::to_string(flywheel.get_actual_velocity()));
-
+        lcd::set_text(1, "Right P, I, D: " + std::to_string(rightpE * propGain) + " " + std::to_string(rightiE * integGain) + " " + std::to_string(rightdE * derivGain)); 
+        lcd::set_text(2, "Left P, I, D: " + std::to_string(leftpE * propGain) + " " + std::to_string(leftiE * integGain) + " " + std::to_string(leftdE * derivGain));
         delay(1);
     }
 }

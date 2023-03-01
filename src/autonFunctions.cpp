@@ -7,8 +7,8 @@ const double inchConstant = (1/(4.125*M_PI)) * (3/7);
 const double errorThreshold = 0.25;
 const double angleThreshold = 0.2;
 
-double propGain = 1;
-double derivGain = 1;
+double propGain = 20;
+double derivGain = 0.001;
 double integGain = 0.001;
 
 double rightpE, rightdE, rightiE;

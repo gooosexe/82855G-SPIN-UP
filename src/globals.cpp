@@ -3,8 +3,8 @@
 #include "pros/adi.hpp"
 #include "pros/motors.h"
 
-Motor mtr_lf(15, E_MOTOR_GEARSET_06, false, E_MOTOR_ENCODER_ROTATIONS);
-Motor mtr_lb(16, E_MOTOR_GEARSET_06, false, E_MOTOR_ENCODER_ROTATIONS);
+Motor mtr_lf(15, E_MOTOR_GEARSET_06, true, E_MOTOR_ENCODER_ROTATIONS);
+Motor mtr_lb(16, E_MOTOR_GEARSET_06, true, E_MOTOR_ENCODER_ROTATIONS);
 Motor mtr_rf(19, E_MOTOR_GEARSET_06, false, E_MOTOR_ENCODER_ROTATIONS);
 Motor mtr_rb(20, E_MOTOR_GEARSET_06, false, E_MOTOR_ENCODER_ROTATIONS);
 
