@@ -17,4 +17,3 @@ Motor mtr_indexer(7, E_MOTOR_GEARSET_18, false);
 IMU imu_sensor(5);
 
 ADIDigitalOut pn_expand('A');
-ADIDigitalOut pn_expand2('B');

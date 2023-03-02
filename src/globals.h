@@ -14,4 +14,4 @@ extern Motor mtr_indexer;
 
 extern IMU imu_sensor;
 
-extern ADIDigitalOut pn_expand, pn_expand2;
+extern ADIDigitalOut pn_expand;
