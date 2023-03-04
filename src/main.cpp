@@ -81,7 +81,7 @@ void opcontrol() {
         }
         //indexer
         if (master.get_digital(DIGITAL_R2)) {
-            mtr_indexer = 90;
+            mtr_indexer = 50;
         } else {
             mtr_indexer = 0;
         }
@@ -96,9 +96,9 @@ void opcontrol() {
         //drive
         //strafeAngle = atan2(ymotion, xmotion)*180/M_PI; // find angle (only used in the second snipped)
 
-        int LF = -ymotion - rotation;
+        int LF = ymotion + rotation;
         int RF = ymotion - rotation;
-        int LB = -ymotion - rotation;
+        int LB = ymotion + rotation;
         int RB = ymotion - rotation;
 
         mtr_lf = LF;
