@@ -7,13 +7,13 @@
 using namespace std;
 using namespace pros;
 
-const double inchConstant = (1/(4.125*M_PI)) * (3.0/7.0);
+const double inchConstant = (1/(4.125*M_PI)) * (7.0/3.0);
 const double errorThreshold = 0.25;
 const double angleThreshold = 0.2;
 
-double propGain = 4;
-double derivGain = 0.1;
-double integGain = 0.1;
+double propGain = 29;
+double derivGain = 6;
+double integGain = 0.05;
 
 double rightpE, rightdE, rightiE;
 double leftpE, leftdE, leftiE;
@@ -30,7 +30,7 @@ double PID(double propError, double derivError, double integError) {
 void resetMotors() {
     mtr_lb.tare_position();
     mtr_rb.tare_position();
-    delay(20);
+    delay(100);
 }
 
 // all distances will be inputted as number of inches
@@ -52,14 +52,14 @@ void moveStraight(double distance) {
     rightpE = distance * inchConstant;
     leftPrevE = 0;
     rightPrevE = 0;
-    lcd::print(0, "%g", leftpE);
+    lcd::print(0, "%f", leftpE);
 
     do {
         leftPrevE = leftpE;
         rightPrevE = rightpE;
 
-        leftpE = distance - mtr_lb.get_position();
-        rightpE = distance - mtr_rb.get_position();
+        leftpE = distance*inchConstant - mtr_lb.get_position();
+        rightpE = distance*inchConstant - mtr_rb.get_position();
         
         leftiE += leftpE;
         rightiE += rightpE;
@@ -68,10 +68,14 @@ void moveStraight(double distance) {
         rightdE = rightPrevE - rightpE;
         
         moveLeftSide(PID(leftpE, leftdE, leftiE));
-        moveRightSide(PID(rightpE, leftdE, leftiE));
+        moveRightSide(PID(rightpE, rightdE, rightiE));
         
-        lcd::print(1, 0, "%g %g %g", leftpE, leftiE, leftdE);
-        lcd::print(2, 0, "%g %g %g", rightpE, rightiE, rightdE);
+        lcd::set_text(1, to_string(leftpE) + " " + to_string(leftiE) + " " + to_string(leftdE));
+        lcd::set_text(2, to_string(rightpE) + " " + to_string(rightiE) + " " + to_string(rightdE));
+        lcd::set_text(3, to_string(mtr_lb.get_position()));
+        lcd::set_text(4, to_string(mtr_rb.get_position()));
+
+        delay(50);
     } while (leftpE > 0.1 || rightpE > 0.1);  
 }
 
