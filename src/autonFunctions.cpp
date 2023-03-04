@@ -2,14 +2,18 @@
 #include "globals.h"
 #include "autonFunctions.h"
 #include "globals.h"
+#include "pros/llemu.hpp"
 
-const double inchConstant = (1/(4.125*M_PI)) * (3/7);
+using namespace std;
+using namespace pros;
+
+const double inchConstant = (1/(4.125*M_PI)) * (3.0/7.0);
 const double errorThreshold = 0.25;
 const double angleThreshold = 0.2;
 
-double propGain = 20;
-double derivGain = 0.001;
-double integGain = 0.001;
+double propGain = 4;
+double derivGain = 0.1;
+double integGain = 0.1;
 
 double rightpE, rightdE, rightiE;
 double leftpE, leftdE, leftiE;
@@ -17,29 +21,29 @@ double anglepE, angledE, angleiE;
 double leftPrevE, rightPrevE, anglePrevE;
         
 
-double PID(double propError, double derivError, double integError) {
+double PID(double propError, double derivError, double integError) { 
     double velocity;
-    velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively
+    velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively 
     return velocity;
 };
 
 void resetMotors() {
     mtr_lb.tare_position();
     mtr_rb.tare_position();
-    delay(50);
+    delay(20);
 }
 
 // all distances will be inputted as number of inches
 // also this is an attempt at implementing pid but it might not work so hang tight
 
 void moveRightSide(double power) {
-    mtr_rb.move_voltage(power);
-    mtr_rf.move_voltage(power);
+    mtr_rb = power;
+    mtr_rf = power;
 }
 
 void moveLeftSide(double power) {
-    mtr_lb.move_voltage(power);
-    mtr_lf.move_voltage(power); 
+    mtr_lb = power;
+    mtr_lf = power; 
 }
 
 void moveStraight(double distance) {
@@ -48,8 +52,9 @@ void moveStraight(double distance) {
     rightpE = distance * inchConstant;
     leftPrevE = 0;
     rightPrevE = 0;
+    lcd::print(0, "%g", leftpE);
 
-    while (leftpE > errorThreshold || rightpE > errorThreshold) {
+    do {
         leftPrevE = leftpE;
         rightPrevE = rightpE;
 
@@ -61,12 +66,13 @@ void moveStraight(double distance) {
 
         leftdE = leftPrevE - leftpE;
         rightdE = rightPrevE - rightpE;
-
+        
         moveLeftSide(PID(leftpE, leftdE, leftiE));
         moveRightSide(PID(rightpE, leftdE, leftiE));
-    }
-
-    moveLeftSide(distance); 
+        
+        lcd::print(1, 0, "%g %g %g", leftpE, leftiE, leftdE);
+        lcd::print(2, 0, "%g %g %g", rightpE, rightiE, rightdE);
+    } while (leftpE > 0.1 || rightpE > 0.1);  
 }
 
 void moveTurn(double angle) {

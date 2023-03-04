@@ -1,6 +1,8 @@
 #include "api.h"
 #include "globals.h"
 #include "pros/adi.hpp"
+#include "pros/misc.h"
+#include "pros/misc.hpp"
 #include "pros/motors.h"
 
 Motor mtr_lf(15, E_MOTOR_GEARSET_06, true, E_MOTOR_ENCODER_ROTATIONS);
@@ -13,6 +15,8 @@ Motor rollerMtr(3, E_MOTOR_GEARSET_36, false, E_MOTOR_ENCODER_DEGREES);
 Motor mtr_intake(9, E_MOTOR_GEARSET_06, false);
 Motor flywheel(10, E_MOTOR_GEARSET_06, false);
 Motor mtr_indexer(7, E_MOTOR_GEARSET_18, false);
+
+Controller master(pros::E_CONTROLLER_MASTER);
 
 IMU imu_sensor(5);
 

@@ -8,8 +8,6 @@
 
 using namespace pros;
 
-Controller master(E_CONTROLLER_MASTER);
-
 // pneumatics+
 // ADIDigitalOut pn_indexer ('C');
 
@@ -29,8 +27,6 @@ void on_center_button() {
 
 void initialize() {
     lcd::initialize();
-    lcd::set_text(1, "PUSHBOT META");
-
     lcd::register_btn1_cb(on_center_button);
 }
 
@@ -111,4 +107,3 @@ void opcontrol() {
         delay(1);
     }
 }
-
