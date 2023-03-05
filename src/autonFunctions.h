@@ -27,6 +27,8 @@ void skillsAuton();
 
 double PID(double propError, double derivError, double integError);
 
+double angPID(double angPropError, double angDerivError, double andIntegError);
+
 void leftAuton();
 
 void rightAuton();

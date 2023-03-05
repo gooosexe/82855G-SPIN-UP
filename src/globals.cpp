@@ -18,6 +18,6 @@ Motor mtr_indexer(7, E_MOTOR_GEARSET_18, false);
 
 Controller master(pros::E_CONTROLLER_MASTER);
 
-IMU imu_sensor(5);
+IMU imu_sensor(21);
 
 ADIDigitalOut pn_expand('A');

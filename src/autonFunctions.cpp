@@ -89,7 +89,7 @@ void moveStraight(double distance) {
     } while (leftpE > 0.1 || rightpE > 0.1);  
 }
 
-void turning(double angle) {
+/*void turning(double angle) {
     resetMotors();
     double curAngle = imu_sensor.get_rotation();
 
@@ -97,17 +97,18 @@ void turning(double angle) {
         moveLeftSide(100);
         moveRightSide(-100);
     }
-}
+}*/
 
 void moveTurn(double angle) {
     resetMotors();
     lcd::clear();
     anglepE = angle;
     anglePrevE = 0;
+    double curAngle = imu_sensor.get_rotation();
 
     do {
         anglePrevE = anglepE;
-        anglepE = angle - imu_sensor.get_rotation();
+        anglepE = (angle + curAngle) - imu_sensor.get_rotation();
         angleiE += anglepE;
         angledE = anglePrevE - anglepE;
 
@@ -128,10 +129,11 @@ void skillsAuton() {
 
 void leftAuton() {
     imu_sensor.reset();
+    imu_sensor.set_rotation();
 
     moveStraight(24);
     delay(500);
-    turning(90);
+    moveTurn(90);
 }
 
 void rightAuton(){
