@@ -2,7 +2,6 @@
 #include <cmath>
 #include <math.h>
 #include <string>
-#include "autonFunctions.h"
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
@@ -39,12 +38,44 @@ void on_center_button() {
     }
 }
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
+void moveLeftSide(int distance, int power) {
+    mtr_lf.move_relative(-distance, power);
+    mtr_lb.move_relative(-distance, power);
+}
+
+void moveRightSide(int distance, int power) {
+    mtr_rf.move_relative(distance, power);
+    mtr_rb.move_relative(distance, power);
+}
+
+void moveAll(int distance, int power) {
+    mtr_lf.move_relative(-distance, power);
+    mtr_lb.move_relative(-distance, power);
+    mtr_rf.move_relative(distance, power);
+    mtr_rb.move_relative(distance, power);
+}
+
+void turnRight90() {
+    moveLeftSide(510, 80);
+    moveRightSide(-510, 80);
+
+}
+
+void turnLeft90() {
+    moveLeftSide(-510, 80);
+    moveRightSide(510, 80);
+}
+
+void flipRight() {
+    moveLeftSide(1010, 80);
+    moveRightSide(-1010, 80);
+}
+
+void flipLeft() {
+    moveLeftSide(-1010, 80);
+    moveRightSide(1010, 80);
+}
+
 void initialize() {
     pros::lcd::initialize();
     pros::lcd::set_text(1, "PUSHBOT META");
@@ -52,21 +83,11 @@ void initialize() {
     pros::lcd::register_btn1_cb(on_center_button);
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
 void disabled() {}
 
 void competition_initialize() {}
 
-int autonToRun = 0;
-
-void autonomous() {
-
-    if (autonToRun == 0) {
-        // LS auto                                                                                                                               
+void leftAuto(){
 
         // roller 1
         moveAll(-300, 80);
@@ -85,7 +106,7 @@ void autonomous() {
         mtr_indexer.move_relative(3500, 127);
         pros::delay(2000);
 
-        /*intake stack and shoot
+        //intake stack and shoot
         moveLeftSide(725, 80);
         moveRightSide(-725, 80);
         pros::delay(1500);
@@ -99,49 +120,119 @@ void autonomous() {
         pros::delay(1500);
         moveAll(100, 127);
         mtr_indexer.move_relative(3500, 127);
+
+}
+
+void rightAuto(){
+
+        // low goals
+        flywheel = 115;
         pros::delay(3000);
-        moveAll(-500, 80);
+        mtr_indexer.move_relative(3000, 127);
+        pros::delay(3500);
+
+        // roller
         flywheel = 0;
-        moveLeftSide(-585, 80);
-        moveRightSide(585, 80);
-        moveLeftSide(750, 80);
-        moveRightSide(-750, 80);
+        moveAll(-inches*11, 100);
         pros::delay(100);
-        pn_expand.set_value(1);*/
-    }
-    else if (autonToRun == 1) {
-        // RS auto
-        moveAll(inches*13, 100);
-        pros::delay(100);
-
         pros::delay(1000);
-
         moveLeftSide(570, 50); // counterclock wise
         moveRightSide(-570, 50);
-
         pros::delay(1000);
-
-        moveAll(inches*2, 80);
-
+        moveAll(-inches*2, 80);
         pros::delay(1000);
-
         rollerMtr.move_relative(470, 127);
+}
 
-        pros::delay(1000);
+void skillsAuto(){
 
-        moveAll(-inches*3, 80);
+    //move to roller
+    moveAll(-inches*12, 100);
+    pros::delay(1000);
+    moveLeftSide(520, 50); // clockwise
+    moveRightSide(-520, 50);
+    pros::delay(800);
+    moveAll(-inches*2, 80);
+    pros::delay(1000);
 
-        pros::delay(1000);
+    // do roller
+    rollerMtr.move_relative(850, 127);
+    pros::delay(1000);
 
-        moveLeftSide(-600, 80); //clockwise
-        moveRightSide(600, 80);
-        pros::delay(200);
-        flywheel = 115;
+    // shoot low goals
+    moveAll(inches*3, 80); // move back
+    pros::delay(1000);
+    moveLeftSide(-670, 80); // face goals, counter clockwise, greater value = more towards outside
+    moveRightSide(670, 80);
+    pros::delay(500);
+    moveAll(200, 80);
+    pros::delay(200);
+    flywheel = 115;
+    pros::delay(2000);
+    mtr_indexer.move_relative(3000, 127);
+    pros::delay(2000);
 
-        pros::delay(3000);
+    // intake 3 discs
+    moveLeftSide(-840, 80); // turn (greater value, towards alliance low goal)
+    moveRightSide(840, 80);
+    pros::delay(1000);
+    mtr_intake = -127;
+    moveAll(-3800, 127);
+    pros::delay(4000);
 
-        mtr_indexer.move_relative(5000, 127);
-    }
+    // shoot high goals
+    moveLeftSide(-585, 80);
+    moveRightSide(585, 80);
+    pros::delay(1500);
+    moveAll(100, 127);
+    mtr_indexer.move_relative(3500, 90);
+    pros::delay(3000);
+
+    // intake stack
+    moveAll(-100, 127);
+    moveLeftSide(585, 80);
+    moveRightSide(-585, 80);
+    pros::delay(3000);
+    moveAll(-2000, 127);
+    pros::delay(3000);
+
+    //shoot high goal 2nd time
+    moveLeftSide(-520, 80); // face high goal, counter clockwise
+    moveRightSide(520, 80);  
+    pros::delay(1000);
+    moveAll(200, 127);
+    mtr_indexer.move_relative(3500, 90);
+    pros::delay(3000);
+
+    // do left side roller
+    moveLeftSide(750, 80); // turn clockwise
+    moveRightSide(-750, 80);
+    moveAll(-1000, 127);
+    pros::delay(1000);
+    moveLeftSide(-250, 80); // turn counter clockwise
+    moveRightSide(250, 80);
+    pros::delay(250);
+    moveAll(-300, 80);
+    pros::delay(300);
+    rollerMtr.move_relative(850, 127);
+    pros::delay(1000);
+
+    // expand
+    moveAll(500, 80);
+    pros::delay(500);
+    moveLeftSide(250, 80); // turn clockwise
+    moveRightSide(-250, 80);
+    pros::delay(300);
+    pn_expand.set_value(1);
+
+}
+
+void autonomous() {
+
+    // leftAuto();
+    // rightAuto();
+    skillsAuto();
+
 }
 
 /**
@@ -172,7 +263,7 @@ void opcontrol() {
         
         // if roller pressed
         if (master.get_digital(DIGITAL_R1)) {
-            rollerMtr = -115;
+            rollerMtr = -70;
         } else {
             rollerMtr = 0;
         }
@@ -192,7 +283,7 @@ void opcontrol() {
         }
         //indexer
         if (master.get_digital(DIGITAL_R2)) {
-            mtr_indexer = 90;
+            mtr_indexer = 70;
         } else {
             mtr_indexer = 0;
         }
