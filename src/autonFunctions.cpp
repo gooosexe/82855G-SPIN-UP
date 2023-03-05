@@ -25,6 +25,8 @@ double angPropGain = 29;
 double angDerivGain = 6;
 double angIntegGain = 0.05;
 
+double angleError, curAngle;
+
 double PID(double propError, double derivError, double integError) { 
     double velocity;
     velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively 
@@ -40,6 +42,10 @@ double angPID(double angPropError, double angDerivError, double andIntegError) {
 void resetMotors() {
     mtr_lb.tare_position();
     mtr_rb.tare_position();
+    mtr_lb = 0;
+    mtr_rb = 0;
+    mtr_lf = 0;
+    mtr_rf = 0;
     delay(100);
 }
 
@@ -87,22 +93,62 @@ void moveStraight(double distance) {
 
         delay(50);
     } while (leftpE > 0.1 || rightpE > 0.1); 
-    lcd::set_text(5, "sex"); 
+
+    resetMotors();
 }
 
-void turning(double angle) {
-    resetMotors();
-    lcd::clear();
-    double curAngle = imu_sensor.get_heading();
-    double error = angle;
-    do {
-        moveRightSide(80);
-        moveLeftSide(-80);
+void turningsex(double angle) {
+    // resetMotors();
+    // lcd::clear();
+    // double error = angle;
+    // do {
+    //     moveRightSide(80);
+    //     moveLeftSide(-80);
 
-        lcd::set_text(0, to_string(error)); 
-        error = (curAngle + angle) - (curAngle + imu_sensor.get_heading());
+    //     lcd::set_text(0, to_string(error));
+    //     printf("IMU rotation: %f degrees\n", imu_sensor.get_heading());
+    //     error = angle - imu_sensor.get_heading();
+
+    //     pros::delay(50);
+    // }
+    // while (fabs(error) > 0.1);
+    curAngle = imu_sensor.get_heading();
+    if (curAngle - angle > 0) {
+        do {
+            angleError = imu_sensor.get_heading() - angle;
+            moveRightSide(40);
+            moveLeftSide(-40);
+            master.print(0, 0, "Angle Error: %f degrees", angleError);
+            delay(20);
+        } while (angleError > 0.25);
+
+        resetMotors();
+    } else {
+        do {
+            angleError = angle - imu_sensor.get_heading();
+            moveRightSide(-40);
+            moveLeftSide(40);
+            master.print(0, 0, "Angle Error: %f degrees", angleError);
+            delay(20);
+        } while (angleError > 0.25);
+
+        resetMotors();
     }
-    while (fabs(error) > 0.5);
+    /*do {
+        angleError = angle - (imu_sensor.get_heading() - curAngle);
+        moveRightSide(-40);
+        moveLeftSide(40);
+        lcd::print(0, "IMU heading: %f degrees", imu_sensor.get_heading());
+        // master.print(0, 0, "IMU heading: %f degrees", imu_sensor.get_heading());
+        master.print(0, 0, "Angle Error: %f degrees", angleError);
+        delay(5);
+        
+    } while (fabs(angleError) > 0.5);
+
+    /*while (true) {
+        lcd::print(0, "IMU heading: %f degrees", imu_sensor.get_heading());
+        delay(20);
+    }*/
 }
 
 void moveTurn(double angle) {
@@ -134,15 +180,12 @@ void skillsAuton() {
 }
 
 void leftAuton() {
-    imu_sensor.reset();
-    imu_sensor.set_heading(-90);
-    delay(2100);
-
-    moveStraight(24);
-    delay(1000);
-    turning(2);
+    
+    // moveStraight(24);
+    //delay(250);
+    turningsex(90);
     delay(500);
-    turning(-2);
+    turningsex(-90);
 }
 
 void rightAuton(){

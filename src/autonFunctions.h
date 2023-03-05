@@ -12,6 +12,7 @@ extern double rightpE, rightdE, rightiE;
 extern double leftpE, leftdE, leftiE;
 extern double anglepE, angledE, angleiE;
 extern double leftPrevE, rightPrevE, anglePrevE;
+extern double angleError, curAngle;
 
 void moveLeftSide(int power);
 
@@ -29,7 +30,7 @@ double PID(double propError, double derivError, double integError);
 
 double angPID(double angPropError, double angDerivError, double andIntegError);
 
-void turning(double angle);
+void turningsex(double angle);
 
 void leftAuton();
 

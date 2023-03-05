@@ -26,6 +26,13 @@ void on_center_button() {
 }
 
 void initialize() {
+    imu_sensor.reset();
+    imu_sensor.tare_heading(); 
+    //imu_sensor.set_heading(-90);
+    while (imu_sensor.is_calibrating()) {
+        pros::delay(20);
+    }
+
     lcd::initialize();
     lcd::register_btn1_cb(on_center_button);
 }
@@ -38,6 +45,11 @@ void initialize() {
 void disabled() {}
 
 void autonomous() {
+    /*while(true) {
+        lcd::set_text(0, std::to_string(imu_sensor.get_heading()));
+        delay(20);
+    }*/
+    
     leftAuton();
 }
 
@@ -104,6 +116,7 @@ void opcontrol() {
         
         lcd::set_text(1, "Right P, I, D: " + std::to_string(rightpE * propGain) + " " + std::to_string(rightiE * integGain) + " " + std::to_string(rightdE * derivGain)); 
         lcd::set_text(2, "Left P, I, D: " + std::to_string(leftpE * propGain) + " " + std::to_string(leftiE * integGain) + " " + std::to_string(leftdE * derivGain));
+        lcd::set_text(3, std::to_string(imu_sensor.get_heading()));
         delay(1);
     }
 }
