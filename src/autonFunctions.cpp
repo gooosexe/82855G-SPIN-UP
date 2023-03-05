@@ -3,6 +3,7 @@
 #include "autonFunctions.h"
 #include "globals.h"
 #include "pros/llemu.hpp"
+#include "pros/screen.hpp"
 
 using namespace std;
 using namespace pros;
@@ -88,10 +89,19 @@ void moveStraight(double distance) {
     } while (leftpE > 0.1 || rightpE > 0.1);  
 }
 
+void turning(double angle) {
+    resetMotors();
+    double curAngle = imu_sensor.get_rotation();
+
+    while (imu_sensor.get_rotation() != curAngle + angle) {
+        moveLeftSide(100);
+        moveRightSide(-100);
+    }
+}
+
 void moveTurn(double angle) {
     resetMotors();
-    imu_sensor.tare_rotation();
-
+    lcd::clear();
     anglepE = angle;
     anglePrevE = 0;
 
@@ -105,7 +115,7 @@ void moveTurn(double angle) {
         moveRightSide(-angPID(anglepE, angledE, angleiE));
 
         lcd::set_text(1, to_string(anglepE) + " " + to_string(angleiE) + " " + to_string(angledE));
-        lcd::set_text(3, to_string(imu_sensor.get_heading()));
+        lcd::set_text(2, to_string(imu_sensor.get_rotation()));
 
         delay(50);
     } while (anglepE > angleThreshold);
@@ -121,7 +131,7 @@ void leftAuton() {
 
     moveStraight(24);
     delay(500);
-    moveTurn(90);
+    turning(90);
 }
 
 void rightAuton(){
