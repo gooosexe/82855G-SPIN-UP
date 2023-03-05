@@ -45,11 +45,6 @@ void initialize() {
 void disabled() {}
 
 void autonomous() {
-    /*while(true) {
-        lcd::set_text(0, std::to_string(imu_sensor.get_heading()));
-        delay(20);
-    }*/
-    
     leftAuton();
 }
 

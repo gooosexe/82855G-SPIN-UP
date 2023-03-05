@@ -28,9 +28,13 @@ void skillsAuton();
 
 double PID(double propError, double derivError, double integError);
 
+void PIDturning(double targetHeading);
+
 double angPID(double angPropError, double angDerivError, double andIntegError);
 
 void turningsex(double angle);
+
+void testPID();
 
 void leftAuton();
 
