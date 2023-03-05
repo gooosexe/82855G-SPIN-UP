@@ -46,12 +46,12 @@ void resetMotors() {
 // all distances will be inputted as number of inches
 // also this is an attempt at implementing pid but it might not work so hang tight
 
-void moveRightSide(double power) {
+void moveRightSide(int power) {
     mtr_rb = power;
     mtr_rf = power;
 }
 
-void moveLeftSide(double power) {
+void moveLeftSide(int power) {
     mtr_lb = power;
     mtr_lf = power; 
 }
@@ -86,29 +86,35 @@ void moveStraight(double distance) {
         lcd::set_text(4, to_string(mtr_rb.get_position()));
 
         delay(50);
-    } while (leftpE > 0.1 || rightpE > 0.1);  
+    } while (leftpE > 0.1 || rightpE > 0.1); 
+    lcd::set_text(5, "sex"); 
 }
 
-/*void turning(double angle) {
+void turning(double angle) {
     resetMotors();
-    double curAngle = imu_sensor.get_rotation();
+    lcd::clear();
+    double curAngle = imu_sensor.get_heading();
+    double error = angle;
+    do {
+        moveRightSide(80);
+        moveLeftSide(-80);
 
-    while (imu_sensor.get_rotation() != curAngle + angle) {
-        moveLeftSide(100);
-        moveRightSide(-100);
+        lcd::set_text(0, to_string(error)); 
+        error = (curAngle + angle) - (curAngle + imu_sensor.get_heading());
     }
-}*/
+    while (fabs(error) > 0.5);
+}
 
 void moveTurn(double angle) {
     resetMotors();
     lcd::clear();
     anglepE = angle;
     anglePrevE = 0;
-    double curAngle = imu_sensor.get_rotation();
+    double curAngle = imu_sensor.get_heading();
 
     do {
         anglePrevE = anglepE;
-        anglepE = (angle + curAngle) - imu_sensor.get_rotation();
+        anglepE = (angle + curAngle) - imu_sensor.get_heading();
         angleiE += anglepE;
         angledE = anglePrevE - anglepE;
 
@@ -116,10 +122,10 @@ void moveTurn(double angle) {
         moveRightSide(-angPID(anglepE, angledE, angleiE));
 
         lcd::set_text(1, to_string(anglepE) + " " + to_string(angleiE) + " " + to_string(angledE));
-        lcd::set_text(2, to_string(imu_sensor.get_rotation()));
+        lcd::set_text(2, to_string(imu_sensor.get_heading()));
 
         delay(50);
-    } while (anglepE > angleThreshold);
+    } while (fabs(anglepE) > angleThreshold);
 }
 
 // REMEMBER TO CHANGE THE VALUES HERE BECAUSE ALL OF THEM ARE IN INCHES NOW
@@ -129,11 +135,14 @@ void skillsAuton() {
 
 void leftAuton() {
     imu_sensor.reset();
-    imu_sensor.set_rotation();
+    imu_sensor.set_heading(-90);
+    delay(2100);
 
     moveStraight(24);
+    delay(1000);
+    turning(2);
     delay(500);
-    moveTurn(90);
+    turning(-2);
 }
 
 void rightAuton(){

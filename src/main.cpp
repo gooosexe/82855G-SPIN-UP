@@ -57,7 +57,7 @@ void opcontrol() {
         
         // if roller pressed
         if (master.get_digital(DIGITAL_R1)) {
-            rollerMtr = -115;
+            rollerMtr = -90;
         } else {
             rollerMtr = 0;
         }
