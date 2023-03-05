@@ -6,7 +6,8 @@
 // the 3/7 is calculating for the gear ratio
 extern const double inchConstant;
 extern const double errorThreshold, angleThreshold;
-extern double propGain, derivGain, integGain;   
+extern double propGain, derivGain, integGain;
+extern double angPropGain, angDerivGain, angIntegGain;   
 extern double rightpE, rightdE, rightiE;
 extern double leftpE, leftdE, leftiE;
 extern double anglepE, angledE, angleiE;

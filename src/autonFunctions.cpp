@@ -19,13 +19,22 @@ double rightpE, rightdE, rightiE;
 double leftpE, leftdE, leftiE;
 double anglepE, angledE, angleiE;
 double leftPrevE, rightPrevE, anglePrevE;
-        
+
+double angPropGain = 29;
+double angDerivGain = 6;
+double angIntegGain = 0.05;
 
 double PID(double propError, double derivError, double integError) { 
     double velocity;
     velocity = (propGain * propError) + (derivGain * derivError) + (integGain * integError); // proportional term, derivative term, and integral term respectively 
     return velocity;
 };
+
+double angPID(double angPropError, double angDerivError, double andIntegError) {
+    double velocity;
+    velocity = (angPropGain * angPropError) + (angDerivError * angDerivError) + (andIntegError * angIntegGain);
+    return velocity;
+}
 
 void resetMotors() {
     mtr_lb.tare_position();
@@ -86,16 +95,20 @@ void moveTurn(double angle) {
     anglepE = angle;
     anglePrevE = 0;
 
-    if (angle )
-    while (anglepE > angleThreshold) {
+    do {
         anglePrevE = anglepE;
         anglepE = angle - imu_sensor.get_rotation();
         angleiE += anglepE;
         angledE = anglePrevE - anglepE;
 
-        moveLeftSide(PID(anglepE, angledE, angleiE));
-        moveRightSide(-PID(anglepE, angledE, angleiE));
-    }
+        moveLeftSide(angPID(anglepE, angledE, angleiE));
+        moveRightSide(-angPID(anglepE, angledE, angleiE));
+
+        lcd::set_text(1, to_string(anglepE) + " " + to_string(angleiE) + " " + to_string(angledE));
+        lcd::set_text(3, to_string(imu_sensor.get_heading()));
+
+        delay(50);
+    } while (anglepE > angleThreshold);
 }
 
 // REMEMBER TO CHANGE THE VALUES HERE BECAUSE ALL OF THEM ARE IN INCHES NOW
@@ -104,7 +117,11 @@ void skillsAuton() {
 }
 
 void leftAuton() {
+    imu_sensor.reset();
+
     moveStraight(24);
+    delay(500);
+    moveTurn(90);
 }
 
 void rightAuton(){
